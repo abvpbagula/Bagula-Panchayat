@@ -164,7 +164,7 @@ export function HomeLayers({
             </div>
 
             <div className="text-xs text-slate-300 font-mono shrink-0">
-              30 Sansads · Cyber Cafe &amp; Assisted e-Services
+              30 Sansads · Citizen e-Services
             </div>
           </div>
 
@@ -282,22 +282,15 @@ export function HomeLayers({
           <div>
             <div className="inline-flex items-center gap-1.5 text-xs font-bold text-blue-900 uppercase tracking-wider">
               <BadgeCheck size={15} className="text-blue-700" />
-              <span>Cyber Cafe &amp; Panchayat Certificates</span>
+              <span>Panchayat Certificates</span>
             </div>
             <h2 id="citizen-services-heading" className="text-xl sm:text-2xl font-extrabold text-slate-900 mt-1">
               Certificate Application Services · শংসাপত্র আবেদন সেবা
             </h2>
             <p className="text-xs sm:text-sm text-slate-600 mt-0.5">
-              Choose a certificate below to start a Cyber Cafe assisted application or view required documents.
+              Choose a certificate below to start an online application or view required documents.
             </p>
           </div>
-          <Link
-            to="/cyber-cafe"
-            className="text-xs font-bold text-blue-800 hover:text-blue-900 inline-flex items-center gap-1 shrink-0 group min-h-[40px] px-2 rounded-lg focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-700"
-          >
-            <span>Open Cyber Cafe Hub</span>
-            <ArrowRight size={13} className="group-hover:translate-x-0.5 transition-transform" />
-          </Link>
         </div>
 
         {/* The 3 Core Live Certificate Services */}
@@ -335,7 +328,7 @@ export function HomeLayers({
                 className="w-full min-h-[44px] rounded-xl font-bold bg-blue-700 hover:bg-blue-800 text-white text-xs shadow-xs"
               >
                 <Link to="/apply/warish" className="flex items-center justify-center gap-1.5">
-                  <span>Apply via Cyber Cafe (আবেদন করুন)</span>
+                  <span>Apply Online (আবেদন করুন)</span>
                   <ArrowRight size={14} />
                 </Link>
               </Button>
@@ -404,7 +397,7 @@ export function HomeLayers({
                 className="w-full min-h-[44px] rounded-xl font-bold bg-sky-700 hover:bg-sky-800 text-white text-xs shadow-xs"
               >
                 <Link to="/apply/dependent" className="flex items-center justify-center gap-1.5">
-                  <span>Apply via Cyber Cafe (আবেদন করুন)</span>
+                  <span>Apply Online (আবেদন করুন)</span>
                   <ArrowRight size={14} />
                 </Link>
               </Button>
@@ -464,7 +457,7 @@ export function HomeLayers({
                 className="w-full min-h-[44px] rounded-xl font-bold bg-emerald-700 hover:bg-emerald-800 text-white text-xs shadow-xs"
               >
                 <Link to="/apply/linkage" className="flex items-center justify-center gap-1.5">
-                  <span>Apply via Cyber Cafe (আবেদন করুন)</span>
+                  <span>Apply Online (আবেদন করুন)</span>
                   <ArrowRight size={14} />
                 </Link>
               </Button>
@@ -725,52 +718,13 @@ export function HomeLayers({
             Portal &amp; Access
           </h2>
           <p className="text-xs sm:text-sm text-slate-600 mt-0.5">
-            Dedicated operational workspaces for authorized assisted service operators, elected representatives, and Panchayat office administration.
+            Dedicated operational workspaces for elected representatives and Panchayat office administration.
           </p>
         </div>
 
-        {/* 3 Dedicated Workspace Cards */}
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-5">
-          {/* 1. Cyber Cafe Hub */}
-          <div className="rounded-2xl bg-white border border-orange-200/90 hover:border-orange-500 p-5 sm:p-6 shadow-xs hover:shadow-md transition-all flex flex-col justify-between space-y-4">
-            <div className="space-y-3">
-              <div className="flex items-start justify-between gap-2">
-                <div className="w-11 h-11 rounded-xl bg-orange-50 text-orange-700 flex items-center justify-center font-bold border border-orange-100">
-                  <Monitor size={22} />
-                </div>
-                <span className="text-xs font-medium text-orange-800">
-                  Open Workstation · No Login
-                </span>
-              </div>
-
-              <div>
-                <h3 className="text-base font-bold text-slate-900">
-                  Cyber Cafe Hub
-                </h3>
-                <p className="text-[11px] font-semibold text-orange-800 mt-0.5">
-                  Assisted Service &amp; Application Prep
-                </p>
-              </div>
-
-              <p className="text-xs text-slate-600 leading-relaxed">
-                Open-access workstation for Cyber Cafe operators and residents to initiate applications, format IDs, and print forms.
-              </p>
-            </div>
-
-            <div className="pt-3 border-t border-slate-100">
-              <Button
-                asChild
-                className="w-full min-h-[44px] rounded-xl font-bold bg-orange-600 hover:bg-orange-700 text-white text-xs shadow-xs"
-              >
-                <Link to="/cyber-cafe" className="flex items-center justify-center gap-1.5">
-                  <span>Open Cyber Cafe Hub</span>
-                  <ArrowRight size={13} />
-                </Link>
-              </Button>
-            </div>
-          </div>
-
-          {/* 2. Elected Representatives */}
+        {/* 2 Dedicated Workspace Cards */}
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
+          {/* 1. Elected Representatives */}
           <div className="rounded-2xl bg-white border border-amber-200/90 hover:border-amber-500 p-5 sm:p-6 shadow-xs hover:shadow-md transition-all flex flex-col justify-between space-y-4">
             <div className="space-y-3">
               <div className="flex items-start justify-between gap-2">

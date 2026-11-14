@@ -45,10 +45,10 @@ export const CitizenAuthSection: React.FC = () => {
           <ShieldCheck className="h-5 w-5 text-blue-700 shrink-0 mt-0.5" />
           <div className="space-y-1">
             <div className="font-semibold text-slate-900">
-              Office-Only Authentication &amp; Open Cyber Cafe Architecture
+              Office-Only Authentication Architecture
             </div>
             <p className="text-slate-600 leading-relaxed">
-              Public and Cyber Cafe accounts are open-access without login gates. Authentication applies strictly to{" "}
+              Public service portals are open-access without login gates. Authentication applies strictly to{" "}
               <strong className="text-slate-900">DEO, Admin, and Super Admin</strong> office accounts via{" "}
               <strong className="text-slate-900">Password, Email OTP, or Google SSO</strong>.
             </p>

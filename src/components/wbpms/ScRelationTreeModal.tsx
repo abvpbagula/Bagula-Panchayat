@@ -178,7 +178,7 @@ Sansad No.: ${sansadNo}, Bagula 2 No Gram Panchayat`;
               <GitBranch size={12} className="mr-1 inline" /> SC/ST Paternal Relation System
             </Badge>
             <Badge variant="secondary" className="text-xs">
-              WBPMS SOP Case I
+              WBPMS Case I Guidelines
             </Badge>
           </div>
           <DialogTitle className="text-xl font-bold font-heading text-foreground">

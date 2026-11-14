@@ -22,6 +22,7 @@ const DESIGNATIONS = [
 const PRIMARY_SUPER_ADMIN_EMAIL = "bagula2nogp111@gmail.com";
 const PROTECTED_EMAILS = [
   PRIMARY_SUPER_ADMIN_EMAIL,
+  "bagulaiiofficerecords@gmail.com",
   "nitish374482@gmail.com",
 ];
 

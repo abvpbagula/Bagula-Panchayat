@@ -50,7 +50,7 @@ export const PublicFormBackendBanner: React.FC<PublicFormBackendBannerProps> = (
         wardNumber: wardNumber.trim() || "Ward 04",
         village: "Bagula",
         payload: {
-          submittedVia: "Cyber Cafe & Assisted Form Registration",
+          submittedVia: "Online Form Registration",
           timestamp: new Date().toISOString(),
         },
       });

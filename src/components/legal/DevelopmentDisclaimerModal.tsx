@@ -19,6 +19,24 @@ import { getActiveNotices, Notice } from "@/services/noticeService";
 const STORAGE_KEY_DISCLAIMER = "b2gp_disclaimer_accepted_v2";
 const STORAGE_PREFIX_NOTICE = "b2gp_notice_acknowledged_";
 
+function safeStorageGet(key: string): string | null {
+  try {
+    return typeof window !== "undefined" ? window.localStorage.getItem(key) : null;
+  } catch {
+    return null;
+  }
+}
+
+function safeStorageSet(key: string, value: string): void {
+  try {
+    if (typeof window !== "undefined") {
+      window.localStorage.setItem(key, value);
+    }
+  } catch {
+    // Ignore storage restriction errors in sandboxed iframes
+  }
+}
+
 export function DevelopmentDisclaimerModal() {
   const [isOpen, setIsOpen] = useState<boolean>(false);
   const [stage, setStage] = useState<"disclaimer" | "announcement">("disclaimer");
@@ -29,7 +47,7 @@ export function DevelopmentDisclaimerModal() {
   // Check state on mount & fetch active urgent notice if any
   useEffect(() => {
     const checkStatus = async () => {
-      const disclaimerAccepted = localStorage.getItem(STORAGE_KEY_DISCLAIMER) === "true";
+      const disclaimerAccepted = safeStorageGet(STORAGE_KEY_DISCLAIMER) === "true";
 
       // Fetch notices to see if there is an unacknowledged urgent notice
       let activeUrgent: Notice | null = null;
@@ -39,7 +57,7 @@ export function DevelopmentDisclaimerModal() {
           (n) => (n.priority === "urgent" || n.is_pinned) && n.is_published
         );
         if (urgent) {
-          const isAck = localStorage.getItem(`${STORAGE_PREFIX_NOTICE}${urgent.id}`) === "true";
+          const isAck = safeStorageGet(`${STORAGE_PREFIX_NOTICE}${urgent.id}`) === "true";
           if (!isAck) {
             activeUrgent = urgent;
             setUrgentNotice(urgent);
@@ -90,10 +108,10 @@ export function DevelopmentDisclaimerModal() {
 
   const handleAcceptDisclaimer = () => {
     if (!isChecked) return;
-    localStorage.setItem(STORAGE_KEY_DISCLAIMER, "true");
+    safeStorageSet(STORAGE_KEY_DISCLAIMER, "true");
 
     // If an urgent announcement exists that hasn't been acknowledged yet, transition to it
-    if (urgentNotice && localStorage.getItem(`${STORAGE_PREFIX_NOTICE}${urgentNotice.id}`) !== "true") {
+    if (urgentNotice && safeStorageGet(`${STORAGE_PREFIX_NOTICE}${urgentNotice.id}`) !== "true") {
       setStage("announcement");
     } else {
       setIsOpen(false);
@@ -106,7 +124,7 @@ export function DevelopmentDisclaimerModal() {
 
   const handleAcknowledgeAnnouncement = () => {
     if (urgentNotice) {
-      localStorage.setItem(`${STORAGE_PREFIX_NOTICE}${urgentNotice.id}`, "true");
+      safeStorageSet(`${STORAGE_PREFIX_NOTICE}${urgentNotice.id}`, "true");
     }
     setIsOpen(false);
   };

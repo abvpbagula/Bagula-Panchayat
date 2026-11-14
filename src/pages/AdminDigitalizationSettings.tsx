@@ -182,7 +182,7 @@ export default function AdminDigitalizationSettings() {
                 Schedule &amp; Quota Configuration
               </h2>
               <p className="text-xs text-muted-foreground">
-                Changes take effect immediately on the public notice and citizen/cyber cafe portals.
+                Changes take effect immediately on the public notice and public portals.
               </p>
             </div>
 
@@ -427,7 +427,7 @@ export default function AdminDigitalizationSettings() {
             <span>Administrative Framework &amp; Regulatory Note</span>
           </div>
           <p>
-            Legacy Birth Certificate Digitization (Pre-2016) is governed under Section 12/17 of the Registration of Births and Deaths Act, 1969 and West Bengal SBHI SOP Case-I. The Gram Panchayat Sub-Registrar and Super Admin have full statutory discretion to schedule intake days and limit processing volumes to ensure rigorous ink-and-paper verification against physical Volume Registers.
+            Legacy Birth Certificate Digitization (Pre-2016) is governed under Section 12/17 of the Registration of Births and Deaths Act, 1969 and West Bengal SBHI Case-I guidelines. The Gram Panchayat Sub-Registrar and Super Admin have full statutory discretion to schedule intake days and limit processing volumes to ensure rigorous ink-and-paper verification against physical Volume Registers.
           </p>
           {form.lastModifiedAt && (
             <div className="flex items-center gap-1.5 pt-1 text-[11px] text-muted-foreground">

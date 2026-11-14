@@ -72,10 +72,10 @@ describe("GoBackButton", () => {
   it("renders custom label", () => {
     render(
       <MemoryRouter>
-        <GoBackButton fallbackUrl="/cyber-cafe" label="Back to Cyber Cafe" />
+        <GoBackButton fallbackUrl="/" label="Back to Home" />
       </MemoryRouter>
     );
 
-    expect(screen.getByRole("button", { name: "Back to Cyber Cafe" })).toBeInTheDocument();
+    expect(screen.getByRole("button", { name: "Back to Home" })).toBeInTheDocument();
   });
 });

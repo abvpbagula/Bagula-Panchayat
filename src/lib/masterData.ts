@@ -82,8 +82,7 @@ export type MasterCategory =
   | "relation"
   | "document_type"
   | "designation"
-  | "rejection_reason"
-  | "sop_guides";
+  | "rejection_reason";
 
 export const MASTER_CATEGORIES: { key: MasterCategory; label: string; emoji: string; hint: string }[] = [
   { key: "village", label: "Villages", emoji: "🏘️", hint: "Authoritative villages of Bagula 2 No Gram Panchayat used across all forms." },
@@ -93,7 +92,6 @@ export const MASTER_CATEGORIES: { key: MasterCategory; label: string; emoji: str
   { key: "document_type", label: "Document Types", emoji: "📄", hint: "Statutory attachment and proof categories." },
   { key: "designation", label: "Designations", emoji: "🏷️", hint: "Office job titles & administrative roles." },
   { key: "rejection_reason", label: "Rejection Reasons", emoji: "⚠️", hint: "Standard objections & return reasons for applications." },
-  { key: "sop_guides", label: "SOPs, Workflows & Videos", emoji: "🎬", hint: "Manage YouTube video links, step-by-step SOP workflows, document checklists, and guidelines for all 18 services." },
 ];
 
 export interface MasterDataItem {

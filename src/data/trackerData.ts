@@ -13,7 +13,7 @@ export const TRACKER_INITIATIVES: TrackerInitiative[] = [
     statusLabel: "Fulfilled / Active",
     statusLabelBn: "বাস্তবায়িত ও সক্রিয়",
     verbatimPromiseEn:
-      "A dedicated facilitation desk active every Monday and Thursday (10:00 AM to 3:30 PM) at the GP Auditorium to pre-verify family trees, land ROR, and submit statutory succession claims without cyber-cafe delays.",
+      "A dedicated facilitation desk active every Monday and Thursday (10:00 AM to 3:30 PM) at the GP Auditorium to pre-verify family trees, land ROR, and submit statutory succession claims smoothly.",
     verbatimPromiseBn:
       "প্রতি সোমবার ও বৃহস্পতিবার জিপি অডিটোরিয়ামে সকাল ১০টা থেকে বিকাল ৩:৩০ পর্যন্ত ওয়ারিশান ও উত্তরাধিকার নথিপত্র সরাসরি যাচাই ও দ্রুততম সময়ে আবেদন নিষ্পত্তির বিশেষ হেল্পডেস্ক।",
     officialMemoNo: "B-II/CAMP/2026/08",
@@ -98,7 +98,7 @@ export const TRACKER_INITIATIVES: TrackerInitiative[] = [
         date: "2026-02-05",
         title: "District Registrar (Nadia) Approval Received",
         titleBn: "নদীয়া জেলা রেজিস্ট্রারের অনুমোদন প্রাপ্তি",
-        description: "Official SOP approved under RBD Act 1969 & West Bengal Rules 2000.",
+        description: "Official guidelines approved under RBD Act 1969 & West Bengal Rules 2000.",
         statusTag: "completed",
       },
       {
@@ -315,54 +315,6 @@ export const TRACKER_INITIATIVES: TrackerInitiative[] = [
         title: "Water Quality Testing Lab Certified",
         titleBn: "জল পরীক্ষা ও আর্সেনিক-মুক্ত শংসাপত্র",
         description: "All sample points tested below permissible contamination limits by PHED Nadia.",
-        statusTag: "completed",
-      },
-    ],
-  },
-  {
-    id: "cyber-cafe-kiosks",
-    slug: "cyber-cafe-kiosks",
-    title: "Authorized Assisted Cyber Cafe Kiosk Network with Capped Citizen Fees",
-    titleBn: "অনুমোদিত সাইবার ক্যাফে কিয়স্ক নেটওয়ার্ক ও নির্দিষ্ট নাগরিক ফি চার্ট",
-    category: "governance_it",
-    categoryLabel: "Governance & IT",
-    categoryLabelBn: "প্রশাসন ও তথ্যপ্রযুক্তি",
-    status: "fulfilled",
-    statusLabel: "Fulfilled / Active",
-    statusLabelBn: "বাস্তবায়িত ও সক্রিয়",
-    verbatimPromiseEn:
-      "Establish accredited rural assisted terminals with statutory rate caps (₹30-₹50) to protect villagers from cyber-cafe middleman exploitation for certificate applications.",
-    verbatimPromiseBn:
-      "গ্রামবাসীদের অতিরিক্ত খরচ ও দালাল চক্র থেকে বাঁচাতে নির্ধারিত সরকারি সার্ভিস চার্জে (₹৩০-₹৫০) অনুমোদিত সাইবার ক্যাফে কিয়স্ক চালুকরণ।",
-    officialMemoNo: "B-II/KIOSK/2026/01",
-    resolutionDate: "2026-01-10",
-    targetArea: "Bagula Market, Station Para, High School Road",
-    targetAreaBn: "বগুলা বাজার, স্টেশন পাড়া, হাই স্কুল রোড",
-    department: "Administrative IT & Citizen Facilitation Directorate",
-    departmentBn: "প্রশাসনিক তথ্যপ্রযুক্তি ও নাগরিক সহায়তা শাখা",
-    progressPercent: 100,
-    lastUpdated: "2026-09-23",
-    officialNotes:
-      "12 local cyber cafe operators onboarded with secure kiosk accounts and strict rate monitoring. Official grievance helpline active.",
-    officialNotesBn:
-      "১২টি সাইবার ক্যাফেতে সরকারি পোর্টাল অ্যাক্সেস এবং নির্ধারিত ফি তালিকা বোর্ড প্রদর্শন বাধ্যতামূলক করা হয়েছে।",
-    citizenReportsCount: 14,
-    verificationLink: "/cyber-cafe",
-    timeline: [
-      {
-        id: "k1",
-        date: "2026-01-10",
-        title: "Kiosk Policy & Citizen Rate Schedule Promulgated",
-        titleBn: "কিয়স্ক নীতি ও নির্দিষ্ট সার্ভিস ফি নির্দেশিকা জারি",
-        description: "Pradhan issued rate-control order prohibiting arbitrary charges for GP certificates.",
-        statusTag: "completed",
-      },
-      {
-        id: "k2",
-        date: "2026-03-01",
-        title: "Dedicated Kiosk Terminal Portal Launched",
-        titleBn: "সাইবার ক্যাফে অপারেটরদের জন্য স্পেশাল পোর্টাল চালু",
-        description: "Assisted workflow engine linked directly to /cyber-cafe workspace.",
         statusTag: "completed",
       },
     ],

@@ -239,7 +239,7 @@ export const NavigationLinksSection: React.FC = () => {
               <Input
                 value={newLink.labelEn}
                 onChange={(e) => setNewLink({ ...newLink, labelEn: e.target.value })}
-                placeholder="e.g. Cyber Cafe Forms"
+                placeholder="e.g. Apply Warish"
                 className="text-xs"
               />
             </div>
@@ -249,7 +249,7 @@ export const NavigationLinksSection: React.FC = () => {
               <Input
                 value={newLink.labelBn}
                 onChange={(e) => setNewLink({ ...newLink, labelBn: e.target.value })}
-                placeholder="e.g. সাইবার ক্যাফে ফর্ম"
+                placeholder="e.g. আবেদন ফরম"
                 className="text-xs font-bengali"
               />
             </div>
@@ -259,7 +259,7 @@ export const NavigationLinksSection: React.FC = () => {
               <Input
                 value={newLink.path}
                 onChange={(e) => setNewLink({ ...newLink, path: e.target.value })}
-                placeholder="e.g. /cyber-cafe or https://example.gov.in"
+                placeholder="e.g. /apply/warish or https://example.gov.in"
                 className="text-xs font-mono"
               />
               <p className="text-[10px] text-muted-foreground">Must begin with "/" for internal pages or "https://" for external.</p>

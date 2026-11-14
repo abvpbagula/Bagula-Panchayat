@@ -25,7 +25,6 @@ import {
   Calendar,
 } from "lucide-react";
 import { type RedirectGuide } from "@/data/redirectGuides";
-import { useDynamicRedirectGuide } from "@/lib/sopMasterData";
 import { validateRedirectDestination } from "@/lib/redirectSafety";
 
 interface ExternalRedirectModalProps {
@@ -35,7 +34,7 @@ interface ExternalRedirectModalProps {
 }
 
 export function ExternalRedirectModal({
-  guide: initialGuide,
+  guide,
   open,
   onOpenChange,
 }: ExternalRedirectModalProps) {
@@ -43,9 +42,6 @@ export function ExternalRedirectModal({
   const [activeTab, setActiveTab] = useState<string>("workflow");
   const [videoPlaying, setVideoPlaying] = useState<boolean>(false);
   const [showExitConfirm, setShowExitConfirm] = useState<boolean>(false);
-
-  const { guide: dynamicGuide } = useDynamicRedirectGuide(initialGuide?.id || "");
-  const guide = dynamicGuide || initialGuide;
 
   if (!guide) return null;
 

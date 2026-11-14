@@ -9,9 +9,15 @@ export default defineConfig(({ mode }) => ({
   server: {
     host: "0.0.0.0",
     port: 3000,
+    allowedHosts: true,
     hmr: {
       overlay: false,
     },
+  },
+  preview: {
+    host: "0.0.0.0",
+    port: 3000,
+    allowedHosts: true,
   },
   plugins: [react(), mcpPlugin(), mode === "development" && componentTagger()].filter(Boolean),
   resolve: {

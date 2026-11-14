@@ -112,8 +112,6 @@ export function SuperAdminSidebarDrawer({
             titleBn: "পুরোনো জন্ম নথি ডিজিটাইজেশন",
             to: "/birth-digitization-form",
             icon: Baby,
-            badge: "SOP Step 2",
-            badgeVariant: "outline",
           },
           {
             id: "delayed-reg",
@@ -191,8 +189,8 @@ export function SuperAdminSidebarDrawer({
           },
           {
             id: "profiles-directory",
-            title: "Citizen & Kiosk Directory",
-            titleBn: "নাগরিক ও সাইবার ক্যাফে তালিকা",
+            title: "DEO Quotas & Directory",
+            titleBn: "ডিইও কোটা ও তালিকা",
             to: "/admin/profiles-directory",
             icon: FileText,
           },

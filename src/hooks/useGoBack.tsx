@@ -38,8 +38,8 @@ export function isProhibitedRedirect(candidatePath: string, currentPath: string)
     }
   }
 
-  // Shell separation: Cyber Cafe & public views must not bounce into Admin workspace
-  if ((currentBase.startsWith("/cyber-cafe") || currentBase.startsWith("/apply")) && candidateBase.startsWith("/admin")) {
+  // Shell separation: Public application views must not bounce into Admin workspace
+  if (currentBase.startsWith("/apply") && candidateBase.startsWith("/admin")) {
     return true;
   }
 
@@ -53,9 +53,9 @@ export function isProhibitedRedirect(candidatePath: string, currentPath: string)
 export function getSafeFallbackUrl(pathname: string, userRoles?: string[]): string {
   const [base] = pathname.split("?");
 
-  // Cyber Cafe assisted application wizard -> Cyber Cafe Hub
+  // Public application wizard -> Public Home
   if (base.startsWith("/apply")) {
-    return "/cyber-cafe";
+    return "/";
   }
 
   // DEO workspace -> DEO Dashboard
@@ -76,7 +76,7 @@ export function getSafeFallbackUrl(pathname: string, userRoles?: string[]): stri
     return "/admin/dashboard";
   }
 
-  // Cyber Cafe Hub & public info pages -> Public Home
+  // Public info pages -> Public Home
   return "/";
 }
 
@@ -87,7 +87,6 @@ export function isRootRoute(pathname: string): boolean {
   const [base] = pathname.split("?");
   return (
     base === "/" ||
-    base === "/cyber-cafe" ||
     base === "/admin/dashboard" ||
     base === "/admin/deo"
   );

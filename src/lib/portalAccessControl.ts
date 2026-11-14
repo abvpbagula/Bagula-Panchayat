@@ -1,7 +1,8 @@
 import { useState, useEffect } from "react";
 import { supabase } from "@/integrations/supabase/client";
+import { getDesignatedOfficeRole, isSuperAdminEmail } from "@/lib/permissions";
 
-export type PortalKey = "cyber_cafe" | "elected" | "admin";
+export type PortalKey = "elected" | "admin";
 
 export interface PortalAccessStatus {
   portal: PortalKey;
@@ -15,7 +16,6 @@ export interface PortalAccessStatus {
 }
 
 export interface SystemAccessOverview {
-  cyberCafe: PortalAccessStatus;
   elected: PortalAccessStatus;
   admin: PortalAccessStatus;
   isLoading: boolean;
@@ -25,7 +25,7 @@ export type PortalAccessState = SystemAccessOverview;
 
 /**
  * Real-time hook checking open vs. office authorization state:
- * - Cyber Cafe Hub & Elected Member Portal: Open Access (zero login required)
+ * - Elected Member Portal: Open Access (zero login required)
  * - GP Office Administration (/admin): Fail-closed for DEO, Admin, and Super Admin only.
  */
 export function usePortalAccessState(): SystemAccessOverview {
@@ -55,17 +55,19 @@ export function usePortalAccessState(): SystemAccessOverview {
         }
 
         const email = session.user.email?.toLowerCase().trim() || "";
-        const isSuperAdminEmail =
-          email === "bagula2nogp111@gmail.com" ||
-          email === "nitish374482@gmail.com" ||
-          email === "nitush6488@gmail.com";
+        const designatedRole = getDesignatedOfficeRole(email);
 
-        if (isSuperAdminEmail) {
+        if (isSuperAdminEmail(email) || designatedRole) {
           if (active) {
             setAdminAuth({
               isAuthorized: true,
               email,
-              role: "Super Admin / Admin",
+              role:
+                designatedRole === "super_admin" || isSuperAdminEmail(email)
+                  ? "Super Admin"
+                  : designatedRole === "admin"
+                  ? "Admin"
+                  : "DEO",
               checking: false,
             });
           }
@@ -118,16 +120,6 @@ export function usePortalAccessState(): SystemAccessOverview {
   }, []);
 
   return {
-    cyberCafe: {
-      portal: "cyber_cafe",
-      label: "সাইবার ক্যাফে · Cyber Cafe & Assisted Service Hub",
-      isAuthorized: true,
-      userIdentifier: "Open Assisted Access",
-      roleName: "Open Cyber Cafe Hub",
-      checking: false,
-      requiredRoleLabel: "Open Access (No Login Required)",
-      loginPath: "/cyber-cafe",
-    },
     elected: {
       portal: "elected",
       label: "জনপ্রতিনিধি · 30 Elected Sansad Ward Reps",

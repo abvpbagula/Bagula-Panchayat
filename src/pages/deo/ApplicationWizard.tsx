@@ -29,6 +29,10 @@ import {
   generateSuccessorTreePreview,
   prepareDocumentReadyData,
 } from "@/modules/warish/successorModel";
+import {
+  computeWarishCareOf,
+  validateWarishApplicantStep,
+} from "@/modules/warish/careOfRules";
 import { supabase } from "@/integrations/supabase/client";
 import { KIND_TABLE } from "@/modules/application/types";
 import { checkDeoCertificatePermission } from "@/lib/userQuotasAndLimits";
@@ -44,7 +48,7 @@ function Row({ label, value }: { label: string; value: string }) {
   );
 }
 
-export default function ApplicationWizard({ cyberCafeMode = false }: { cyberCafeMode?: boolean }) {
+export default function ApplicationWizard({ publicApplyMode = false }: { publicApplyMode?: boolean }) {
   const { kind: kindParam } = useParams();
   const kind: ApplicationKind =
     kindParam === "dependent" ? "dependent" : kindParam === "linkage" ? "linkage" : "warish";
@@ -66,7 +70,7 @@ export default function ApplicationWizard({ cyberCafeMode = false }: { cyberCafe
 
   // Check role-based DEO certificate permissions on mount for staff mode
   useEffect(() => {
-    if (cyberCafeMode) return;
+    if (publicApplyMode) return;
     (async () => {
       try {
         const { data: { user } } = await supabase.auth.getUser();
@@ -79,7 +83,7 @@ export default function ApplicationWizard({ cyberCafeMode = false }: { cyberCafe
         console.warn("Could not verify DEO permissions:", err);
       }
     })();
-  }, [cyberCafeMode, kind]);
+  }, [publicApplyMode, kind]);
 
   // Hydrate an existing draft / returned application
   useEffect(() => {
@@ -88,7 +92,7 @@ export default function ApplicationWizard({ cyberCafeMode = false }: { cyberCafe
     (async () => {
       try {
         const row = await loadApplication(kind, id);
-        if (!row) { toast.error("Application not found."); navigate(cyberCafeMode ? "/cyber-cafe" : "/admin/deo"); return; }
+        if (!row) { toast.error("Application not found."); navigate(publicApplyMode ? "/" : "/admin/deo"); return; }
         const loadedDraft = recordDataToDraft(row.data);
         if (kind === "warish") {
           try {
@@ -117,8 +121,8 @@ export default function ApplicationWizard({ cyberCafeMode = false }: { cyberCafe
   }, []);
 
   const persist = useCallback(
-    async (value: ApplicationDraft) => { if (appId) await saveDraft(kind, appId, value, cyberCafeMode); },
-    [appId, kind, cyberCafeMode],
+    async (value: ApplicationDraft) => { if (appId) await saveDraft(kind, appId, value, publicApplyMode); },
+    [appId, kind, publicApplyMode],
   );
   const autoSave = useAutoSave(draft, persist, { enabled: Boolean(appId) && !done });
 
@@ -136,7 +140,7 @@ export default function ApplicationWizard({ cyberCafeMode = false }: { cyberCafe
       const { data: { user } } = await supabase.auth.getUser();
 
       // Check DEO certificate permissions & daily quota in office mode
-      if (!cyberCafeMode && user) {
+      if (!publicApplyMode && user) {
         const perm = await checkDeoCertificatePermission(user.id, kind);
         if (!perm.allowed) {
           toast.error(perm.reason || "Certificate creation restricted by Super Admin.");
@@ -150,7 +154,7 @@ export default function ApplicationWizard({ cyberCafeMode = false }: { cyberCafe
         ...EMPTY_DRAFT,
         applicant: { ...EMPTY_DRAFT.applicant, mobile: draft.applicant.mobile, email: draft.applicant.email },
       };
-      const id = await createDraft(kind, base, parentId ?? null, cyberCafeMode);
+      const id = await createDraft(kind, base, parentId ?? null, publicApplyMode);
       setDraft(base);
       setAppId(id);
       setStatus("Draft");
@@ -188,51 +192,80 @@ export default function ApplicationWizard({ cyberCafeMode = false }: { cyberCafe
     }
   };
 
-  const validationError = useMemo(() => {
+  const validationErrors = useMemo<string[]>(() => {
     if (step === "applicant") {
-      if (!(draft.applicant?.name ?? "").trim()) return "Applicant name is required.";
-      if (!draft.applicant?.village) return "Village is required.";
+      if (kind === "warish") {
+        const manualCareOf =
+          draft.applicant?.careOf !== undefined
+            ? draft.applicant.careOf
+            : [draft.applicant?.relationType, draft.applicant?.guardianName]
+                .filter(Boolean)
+                .join(" ")
+                .trim();
+        const rule = computeWarishCareOf({
+          relation: draft.warish?.applicantRelation ?? "",
+          deceasedName: draft.warish?.deceasedName ?? "",
+          applicantName: draft.applicant?.name ?? "",
+          deceasedChildRelation: draft.warish?.deceasedChildRelation ?? "",
+          manualApplicantCareOf: manualCareOf,
+        });
+        return validateWarishApplicantStep({
+          prefix: draft.applicant?.prefix ?? "",
+          name: draft.applicant?.name ?? "",
+          applicantRelation: draft.warish?.applicantRelation ?? "",
+          deceasedName: draft.warish?.deceasedName ?? "",
+          deceasedChildRelation: draft.warish?.deceasedChildRelation ?? "",
+          deceasedCareOf: draft.warish?.deceasedCareOf ?? rule.deceasedCareOf,
+          careOf: rule.isApplicantCareOfReadOnly ? rule.applicantCareOf : manualCareOf,
+          village: draft.applicant?.village ?? "",
+          postOffice: draft.applicant?.postOffice ?? "",
+          mobile: draft.applicant?.mobile ?? "",
+        }).errors;
+      }
+      if (!(draft.applicant?.name ?? "").trim()) return ["Applicant name is required."];
+      if (!draft.applicant?.village) return ["Village is required."];
     }
     if (step === "details" && kind === "warish") {
-      if (!(draft.warish?.deceasedName ?? "").trim()) return "Name of the deceased is required.";
-      if (!draft.warish?.dateOfDeath) return "Date of death is required.";
-      if (!draft.warish?.village) return "Village must be selected from the master dropdown.";
-      if (!draft.warish?.postOffice) return "Post office must be selected from the master dropdown.";
-      if (!draft.warish?.applicantRelation) return "Applicant's relation to deceased must be selected.";
+      if (!(draft.warish?.deceasedName ?? "").trim()) return ["Name of the deceased is required."];
+      if (!draft.warish?.dateOfDeath) return ["Date of death is required."];
+      if (!draft.warish?.village) return ["Village must be selected from the master dropdown."];
+      if (!draft.warish?.postOffice) return ["Post office must be selected from the master dropdown."];
+      if (!draft.warish?.applicantRelation) return ["Applicant's relation to deceased must be selected."];
       const succs = draft.warish?.successors || [];
       const heirs = draft.warish?.heirs || [];
       const hasHeirs = succs.length > 0 || heirs.some((h) => (h?.name ?? "").trim());
-      if (!hasHeirs) return "At least one legal successor is required.";
+      if (!hasHeirs) return ["At least one legal successor is required."];
       const directCount = succs.filter((s) => !s.parent_successor_id).length;
       if (directCount > MAX_DIRECT_SUCCESSORS) {
-        return `Direct successors cannot exceed ${MAX_DIRECT_SUCCESSORS}.`;
+        return [`Direct successors cannot exceed ${MAX_DIRECT_SUCCESSORS}.`];
       }
       for (const s of succs) {
-        if (!(s?.name ?? "").trim()) return `Name is required for successor ${s.serial_code}.`;
-        if (!s.relation || !(s.relation ?? "").trim()) return `Relation with deceased is required for successor ${s.serial_code}.`;
+        if (!(s?.name ?? "").trim()) return [`Name is required for successor ${s.serial_code}.`];
+        if (!s.relation || !(s.relation ?? "").trim()) return [`Relation with deceased is required for successor ${s.serial_code}.`];
       }
     }
     if (step === "details" && kind === "dependent") {
       const deps = draft.dependent?.dependents || [];
       if (!deps.some((d) => (d?.name ?? "").trim())) {
-        return "At least one dependent name is required.";
+        return ["At least one dependent name is required."];
       }
     }
     if (step === "details" && kind === "linkage") {
       if (!(draft.linkage?.assemblyConstituency ?? "").trim())
-        return "Assembly Constituency is required.";
+        return ["Assembly Constituency is required."];
       const parentRecords = draft.linkage?.parentElectoralRecords || [];
       if (
         parentRecords.length === 0 ||
         !parentRecords.some((r) => (r?.name ?? "").trim())
       ) {
-        return "At least one parent / ancestor electoral record name is required.";
+        return ["At least one parent / ancestor electoral record name is required."];
       }
     }
     if (step === "attachments" && record?.document_mode !== "DOCUMENT_ENGINE" && !draft.attachments?.declarationAccepted)
-      return "Please accept the declaration before continuing.";
-    return null;
+      return ["Please accept the declaration before continuing."];
+    return [];
   }, [step, draft, kind, record?.document_mode]);
+  const validationError = validationErrors[0] ?? null;
 
   const submit = async () => {
     setBusy(true);
@@ -240,11 +273,11 @@ export default function ApplicationWizard({ cyberCafeMode = false }: { cyberCafe
       let effectiveId = appId;
       if (!effectiveId) {
         // Auto-create draft if not yet initialized
-        effectiveId = await createDraft(kind, draft, null, cyberCafeMode);
+        effectiveId = await createDraft(kind, draft, null, publicApplyMode);
         setAppId(effectiveId);
       }
       await autoSave.flush();
-      const res = await submitApplication(kind, effectiveId, cyberCafeMode);
+      const res = await submitApplication(kind, effectiveId, publicApplyMode);
       setDone(true);
       setStatus(res.status);
       toast.success(res.resubmitted ? "📤 Resubmitted for Admin review" : "📤 Submitted for Admin review");
@@ -305,11 +338,11 @@ export default function ApplicationWizard({ cyberCafeMode = false }: { cyberCafe
           {appId && <ApplicationTimeline kind={kind} id={appId} />}
           <div className="flex flex-wrap gap-2">
             <Button asChild variant="outline">
-              <Link to={cyberCafeMode ? "/cyber-cafe" : "/admin/deo"}>
-                {cyberCafeMode ? "Back to Cyber Cafe Hub" : "Back to DEO dashboard"}
+              <Link to={publicApplyMode ? "/" : "/admin/deo"}>
+                {publicApplyMode ? "Back to Home" : "Back to DEO dashboard"}
               </Link>
             </Button>
-            {!cyberCafeMode && KIND_GENERATOR_ROUTE[kind] !== "#" && (
+            {!publicApplyMode && KIND_GENERATOR_ROUTE[kind] !== "#" && (
               <Button asChild><Link to={`${KIND_GENERATOR_ROUTE[kind]}?load=${appId}`}>📄 Open certificate sheet</Link></Button>
             )}
           </div>
@@ -326,8 +359,8 @@ export default function ApplicationWizard({ cyberCafeMode = false }: { cyberCafe
               </p>
               <div className="pt-2 flex items-center gap-2">
                 <Button asChild size="sm" variant="outline" className="min-h-[40px] text-xs border-rose-300 text-rose-900 hover:bg-rose-100">
-                  <Link to={cyberCafeMode ? "/cyber-cafe" : "/admin/deo"}>
-                    {cyberCafeMode ? "← Back to Cyber Cafe Hub" : "← Back to DEO Workspace"}
+                  <Link to={publicApplyMode ? "/" : "/admin/deo"}>
+                    {publicApplyMode ? "← Back to Home" : "← Back to DEO Workspace"}
                   </Link>
                 </Button>
               </div>
@@ -355,8 +388,21 @@ export default function ApplicationWizard({ cyberCafeMode = false }: { cyberCafe
 
           {step === "applicant" && (
             <ApplicantSection
+              kind={kind}
               value={draft.applicant}
               onChange={(applicant) => setDraft((d) => ({ ...d, applicant }))}
+              warishValue={kind === "warish" ? draft.warish : undefined}
+              onWarishChange={
+                kind === "warish"
+                  ? (warish) => setDraft((d) => ({ ...d, warish }))
+                  : undefined
+              }
+              onWarishDraftPatch={
+                kind === "warish"
+                  ? (applicant, warish) => setDraft((d) => ({ ...d, applicant, warish }))
+                  : undefined
+              }
+              readOnly={!editable}
               isMarriedDaughterLinkage={kind === "linkage"}
             />
           )}
@@ -407,7 +453,14 @@ export default function ApplicationWizard({ cyberCafeMode = false }: { cyberCafe
               <section>
                 <h3 className="mb-1 text-sm font-semibold">👤 Applicant</h3>
                 <Row label="Name" value={`${draft.applicant?.prefix || ""} ${draft.applicant?.name || ""}`.trim()} />
-                <Row label="Guardian" value={`${draft.applicant?.relationType || ""} ${draft.applicant?.guardianName || ""}`.trim()} />
+                <Row
+                  label={kind === "warish" ? "Care of" : "Guardian"}
+                  value={
+                    kind === "warish" && draft.applicant?.careOf
+                      ? draft.applicant.careOf
+                      : `${draft.applicant?.relationType || ""} ${draft.applicant?.guardianName || ""}`.trim()
+                  }
+                />
                 <Row label="Village" value={draft.applicant.village === "Other" ? draft.applicant.villageManual : draft.applicant.village} />
                 <Row label="Post Office" value={draft.applicant.postOffice === "Other" ? draft.applicant.postOfficeManual : draft.applicant.postOffice} />
                 <Row label="Block / District" value={`${draft.applicant.block}, ${draft.applicant.district}`} />
@@ -419,7 +472,14 @@ export default function ApplicationWizard({ cyberCafeMode = false }: { cyberCafe
                 {kind === "warish" ? (
                   <div className="space-y-4">
                     <Row label="Name of Deceased" value={draft.warish.deceasedName} />
-                    <Row label="Father / Husband" value={`${draft.warish?.fatherPrefix || "Late"} ${draft.warish?.fatherName || ""}`.trim()} />
+                    <Row
+                      label="Father / Husband"
+                      value={
+                        draft.warish?.deceasedCareOf
+                          ? draft.warish.deceasedCareOf
+                          : `${draft.warish?.fatherPrefix || "Late"} ${draft.warish?.fatherName || ""}`.trim()
+                      }
+                    />
                     <Row label="Date of Death" value={draft.warish.dateOfDeath} />
                     {draft.warish.ageAtDeath && <Row label="Age at Death" value={draft.warish.ageAtDeath} />}
                     {draft.warish.placeOfDeath && <Row label="Place of Death" value={draft.warish.placeOfDeath} />}
@@ -592,7 +652,21 @@ export default function ApplicationWizard({ cyberCafeMode = false }: { cyberCafe
               This application is already with the Admin, so it is read-only here.
             </p>
           )}
-          {validationError && <p className="mt-4 text-sm text-destructive">{validationError}</p>}
+          {validationErrors.length > 0 &&
+            (kind === "warish" && step === "applicant" ? (
+              <div className="mt-4 rounded-lg border border-destructive/30 bg-destructive/5 p-3.5 text-sm text-destructive space-y-1">
+                <p className="font-medium">
+                  Please complete all required fields before continuing:
+                </p>
+                <ul className="list-disc pl-5 space-y-0.5 text-xs">
+                  {validationErrors.map((err) => (
+                    <li key={err}>{err}</li>
+                  ))}
+                </ul>
+              </div>
+            ) : (
+              <p className="mt-4 text-sm text-destructive">{validationError}</p>
+            ))}
         </>
       )}
     </WizardShell>

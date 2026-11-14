@@ -11,12 +11,7 @@ import {
 import { DataStateView } from "@/components/shared/DataStateView";
 import { AccessibleActionCard } from "@/components/shared/AccessibleActionCard";
 import { PageSectionHeader } from "@/components/shared/PageSectionHeader";
-import CyberCafePortal from "@/pages/CyberCafePortal";
 import ElectedMemberPortal from "@/pages/ElectedMemberPortal";
-
-vi.mock("@/components/tools/CyberToolsAndGovernmentPortals", () => ({
-  CyberToolsAndGovernmentPortals: () => <div data-testid="cyber-tools-hub">Cyber Tools &amp; Portals</div>,
-}));
 
 vi.mock("@/pages/member/MemberEpicLinkageVerificationPanel", () => ({
   default: () => <div data-testid="member-epic-panel">EPIC Linkage Verification Desk</div>,
@@ -63,24 +58,6 @@ describe("Open-Access Workspaces (Zero Public Login Gates)", () => {
     localStorage.clear();
   });
 
-  it("renders CyberCafePortal directly with /apply/* links and zero login inputs", () => {
-    const { container } = render(
-      <HelmetProvider>
-        <MemoryRouter>
-          <CyberCafePortal />
-        </MemoryRouter>
-      </HelmetProvider>
-    );
-
-    expect(screen.getByText(/Cyber Cafe & Assisted Service Hub/i)).toBeInTheDocument();
-    expect(screen.getByTestId("cyber-tools-hub")).toBeInTheDocument();
-    expect(container.querySelector('input[type="password"]')).toBeNull();
-    expect(screen.getByRole("link", { name: /Start Warish Application/i })).toHaveAttribute(
-      "href",
-      "/apply/warish"
-    );
-  });
-
   it("renders ElectedMemberPortal directly with zero PIN login gate", () => {
     const { container } = render(
       <HelmetProvider>
@@ -93,7 +70,6 @@ describe("Open-Access Workspaces (Zero Public Login Gates)", () => {
     expect(screen.getByTestId("member-epic-panel")).toBeInTheDocument();
     expect(container.querySelector('input[type="password"]')).toBeNull();
     expect(localStorage.getItem("b2gp_elected_member_auth")).toBeNull();
-    expect(localStorage.getItem("b2gp_logged_in_cyber_kiosk")).toBeNull();
   });
 });
 

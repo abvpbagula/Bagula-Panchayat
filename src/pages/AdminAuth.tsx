@@ -11,12 +11,16 @@ import { ADMIN_EMAILS } from "@/components/RequireAdmin";
 import {
   isSuperAdminEmail,
   isPrimarySuperAdminEmail,
+  getDesignatedOfficeRole,
   type OfficeRole,
 } from "@/lib/permissions";
+import { isSupabaseConfigured } from "@/lib/supabaseEnv";
 import {
   verifyTempAdminLogin,
   establishTempAdminSession,
-  TEMP_ADMIN_EMAIL,
+  verifyConfiguredOfficeLogin,
+  establishConfiguredOfficeSession,
+  getConfiguredOfficeCredential,
   SUPER_ADMIN_CRED_EMAILS,
 } from "@/lib/tempAdminCredentials";
 import { setLastRedirectReason, writeAdminAuthDebug } from "@/lib/adminAuthDebug";
@@ -78,29 +82,35 @@ type Method = "google" | "password" | "otp" | "session";
  * method it just used is permitted for that account.
  * Returns an error message, or null when the sign-in is accepted.
  */
-async function validateOfficeSession(userId: string, email: string | null, method: Method): Promise<{ problem: string | null; role: OfficeRole | null }> {
+async function validateOfficeSession(
+  userId: string,
+  email: string | null,
+  method: Method,
+  accessToken?: string | null
+): Promise<{ problem: string | null; role: OfficeRole | null }> {
   const normEmail = email?.trim().toLowerCase() ?? null;
+  const isSyntheticSession = Boolean(accessToken?.startsWith("temp_admin_token_"));
 
-  // Designated Super Admin is unconditionally authorized & synced to Supabase
+  // Designated Super Admins are unconditionally authorized
   if (isSuperAdminEmail(normEmail)) {
-    supabase
-      .from("user_roles")
-      .upsert({ user_id: userId, role: "super_admin" } as any)
-      .then(() => {});
-    supabase
-      .from("admin_profiles")
-      .upsert({
-        user_id: userId,
-        email: normEmail,
-        display_name: isPrimarySuperAdminEmail(normEmail)
-          ? "Super Admin (Bagula-II GP)"
-          : "Secondary Super Admin (Bagula-II GP)",
-        status: "active",
-        allowed_login_method: "all",
-        service_scope: ["all"],
-        archived_at: null,
-      } as any)
-      .then(() => {});
+    if (isSupabaseConfigured && !isSyntheticSession) {
+      supabase
+        .from("user_roles")
+        .upsert({ user_id: userId, role: "super_admin" } as any)
+        .then(() => {});
+      supabase
+        .from("admin_profiles")
+        .upsert({
+          user_id: userId,
+          email: normEmail,
+          display_name: "Super Admin (Bagula-II GP)",
+          status: "active",
+          allowed_login_method: "all",
+          service_scope: ["all"],
+          archived_at: null,
+        } as any)
+        .then(() => {});
+    }
     return { problem: null, role: "super_admin" };
   }
 
@@ -111,6 +121,12 @@ async function validateOfficeSession(userId: string, email: string | null, metho
     sessionStorage.getItem("bagula2_temp_must_change_password") === "true"
   ) {
     return { problem: null, role: "super_admin" };
+  }
+
+  // Active configured local/preview office session (nitush6488 -> deo, nitush8343980898 -> admin)
+  const configuredCred = getConfiguredOfficeCredential(normEmail);
+  if (configuredCred && (!isSupabaseConfigured || isSyntheticSession)) {
+    return { problem: null, role: configuredCred.role };
   }
 
   let [{ data: roles, error: rolesError }, { data: profile, error: profileError }] = await Promise.all([
@@ -151,12 +167,9 @@ async function validateOfficeSession(userId: string, email: string | null, metho
 
   // Strict role resolution
   let role: OfficeRole = "deo";
-  if (isSuperAdminEmail(normEmail)) {
-    role = "super_admin";
-  } else if (normEmail === "nitush6488@gmail.com") {
-    role = "admin";
-  } else if (normEmail === "nitush8343980898@gmail.com") {
-    role = "deo";
+  const designatedRole = getDesignatedOfficeRole(normEmail);
+  if (designatedRole) {
+    role = designatedRole;
   } else {
     const roleList = (roles ?? []).map((r) => r.role);
     if (roleList.includes("super_admin")) role = "super_admin";
@@ -244,7 +257,12 @@ export default function AdminAuth() {
 
       if (session) {
         const mail = session.user.email?.trim().toLowerCase() ?? null;
-        const { problem, role } = await validateOfficeSession(session.user.id, mail, restoredFromOAuth ? "google" : "session");
+        const { problem, role } = await validateOfficeSession(
+          session.user.id,
+          mail,
+          restoredFromOAuth ? "google" : "session",
+          session.access_token
+        );
         if (!active) return;
         if (!problem) {
           writeAdminAuthDebug({
@@ -336,7 +354,81 @@ export default function AdminAuth() {
     try {
       const normEmail = cleanEmail.toLowerCase();
 
-      // Check temporary credentials for designated Super Admins
+      // Check configured active office credentials (nitush6488 -> deo, nitush8343980898 -> admin, bagulaiiofficerecords -> super_admin)
+      const configuredResult = verifyConfiguredOfficeLogin(normEmail, password);
+      if (configuredResult.matchedAccount) {
+        if (!configuredResult.success || !configuredResult.role) {
+          recordAuthIncident({
+            action_type: "auth.signin_failed",
+            actor_email: normEmail,
+            reason: "Incorrect password provided for configured office account",
+            severity: "error",
+          });
+          await recordAdminAuthAuditEvent({
+            eventType: isSuperAdminEmail(normEmail)
+              ? "auth.super_admin_intrusion_blocked"
+              : "auth.signin_failed",
+            actorEmail: normEmail,
+            loginMethod: "password",
+            reason: isSuperAdminEmail(normEmail)
+              ? `Unauthorized password attempt targeting Super Admin account (${normEmail})`
+              : "Incorrect password provided at office login portal",
+            severity: isSuperAdminEmail(normEmail) ? "critical" : "error",
+            isUnauthorizedAttempt: true,
+            targetSuperAdminOverride: isSuperAdminEmail(normEmail),
+          });
+          throw new Error(configuredResult.error || "Incorrect email or password.");
+        }
+
+        // If Supabase is configured, try real Supabase Auth first so a real JWT session is used when the account exists in Auth;
+        // otherwise fall back to establishing the local role-bound office session cleanly.
+        let signedInRole: OfficeRole | null = null;
+        if (isSupabaseConfigured) {
+          const { data: sbData, error: sbError } = await supabase.auth.signInWithPassword({
+            email: normEmail,
+            password,
+          });
+          if (!sbError && sbData.user) {
+            const { problem, role } = await validateOfficeSession(
+              sbData.user.id,
+              sbData.user.email?.trim().toLowerCase() ?? normEmail,
+              "password",
+              sbData.session?.access_token
+            );
+            if (!problem && role) {
+              signedInRole = role;
+            } else if (problem) {
+              await supabase.auth.signOut();
+            }
+          }
+        }
+
+        if (!signedInRole) {
+          establishConfiguredOfficeSession(normEmail);
+          signedInRole = configuredResult.role;
+        }
+
+        resetClientRateLimit("admin_password_login");
+        setPassword("");
+        await upsertAdminSessionHeartbeat({
+          email: normEmail,
+          role: signedInRole,
+          loginMethod: "password",
+        });
+        await recordAdminAuthAuditEvent({
+          eventType: "auth.signin_success",
+          actorEmail: normEmail,
+          loginMethod: "password",
+          reason: `Office user authenticated with ${signedInRole} privileges`,
+          severity: "info",
+          isUnauthorizedAttempt: false,
+        });
+        toast.success(`Signed in as ${signedInRole === "super_admin" ? "Super Admin" : signedInRole.toUpperCase()}.`);
+        goOn(signedInRole);
+        return;
+      }
+
+      // Check temporary credentials for designated Super Admins (bagula2nogp111@gmail.com / nitish374482@gmail.com)
       if (SUPER_ADMIN_CRED_EMAILS.includes(normEmail)) {
         const tempResult = verifyTempAdminLogin(normEmail, password);
         if (tempResult.success) {
@@ -406,7 +498,7 @@ export default function AdminAuth() {
       const user = data.user;
       if (!user) throw new Error("Sign-in did not return an authenticated user.");
       const mail = user.email?.trim().toLowerCase() ?? null;
-      const { problem, role } = await validateOfficeSession(user.id, mail, "password");
+      const { problem, role } = await validateOfficeSession(user.id, mail, "password", data.session?.access_token);
       if (problem) {
         recordAuthIncident({
           action_type: "auth.unauthorized_access",

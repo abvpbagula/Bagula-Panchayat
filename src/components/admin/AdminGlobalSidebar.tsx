@@ -26,6 +26,7 @@ import {
   Baby,
   ExternalLink,
   Sparkles,
+  GitBranch,
 } from "lucide-react";
 import { useAuthz } from "@/lib/permissions";
 import { logActivity } from "@/lib/activityLog";
@@ -135,6 +136,13 @@ export function AdminGlobalSidebar({
       to: "/birth-digitization-form",
       icon: Baby,
       active: location.pathname === "/birth-digitization-form",
+    },
+    {
+      title: "Family Tree (বংশতালিকা)",
+      bengaliTitle: "বংশতালিকা জেনারেটর",
+      to: "/admin/family-tree",
+      icon: GitBranch,
+      active: location.pathname === "/admin/family-tree" || location.pathname === "/family-tree-generator",
     },
     {
       title: "Public Notices",

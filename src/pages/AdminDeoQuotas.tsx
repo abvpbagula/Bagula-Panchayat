@@ -408,7 +408,7 @@ export default function AdminDeoQuotas() {
             <div className="flex items-center gap-2">
               <ShieldCheck size={16} className="text-primary" />
               <h2 className="text-xs font-bold text-foreground uppercase tracking-wide">
-                Regulatory Framework &amp; Tier Policy (Rule 12/13 RBD &amp; West Bengal SOP)
+                Regulatory Framework &amp; Tier Policy (Rule 12/13 RBD Act Guidelines)
               </h2>
             </div>
             <p className="text-xs text-muted-foreground max-w-3xl leading-relaxed">
@@ -805,7 +805,7 @@ export default function AdminDeoQuotas() {
                   <span>Gram Panchayat System-Wide Default Quotas</span>
                 </CardTitle>
                 <CardDescription className="text-xs">
-                  Default limits automatically assigned when onboarding Data Entry Operators and Cyber Cafe CSC nodes.
+                  Default limits automatically assigned when onboarding Data Entry Operators.
                 </CardDescription>
               </div>
               <Button
@@ -821,7 +821,7 @@ export default function AdminDeoQuotas() {
             </div>
           </CardHeader>
 
-          <CardContent className="p-4 grid grid-cols-1 sm:grid-cols-2 gap-4">
+          <CardContent className="p-4 grid grid-cols-1 gap-4">
             <div className="space-y-1">
               <label className="text-xs font-bold text-foreground block">
                 Default DEO Daily Application Quota
@@ -841,28 +841,6 @@ export default function AdminDeoQuotas() {
                   className="w-28 h-8 text-xs font-bold"
                 />
                 <span className="text-xs text-muted-foreground">Drafts / Day</span>
-              </div>
-            </div>
-
-            <div className="space-y-1">
-              <label className="text-xs font-bold text-foreground block">
-                Cyber Cafe Daily Rate Cap
-              </label>
-              <p className="text-[11px] text-muted-foreground mb-1">
-                Default submission ceiling for local CSC Cyber Cafe nodes.
-              </p>
-              <div className="flex items-center gap-2">
-                <Input
-                  type="number"
-                  min={5}
-                  max={200}
-                  value={policy.defaultCyberDailyLimit}
-                  onChange={(e) =>
-                    setPolicy({ ...policy, defaultCyberDailyLimit: Number(e.target.value) || 50 })
-                  }
-                  className="w-28 h-8 text-xs font-bold"
-                />
-                <span className="text-xs text-muted-foreground">Files / Day</span>
               </div>
             </div>
           </CardContent>

@@ -40,7 +40,7 @@ export default function WarishApplicationFormPage() {
           <div className="flex items-center gap-2">
             <Link to="/apply/warish">
               <Button variant="outline" size="sm" className="rounded-xl text-xs font-semibold h-9 text-primary border-primary/30">
-                <span>Apply via Cyber Cafe</span>
+                <span>Apply Online</span>
               </Button>
             </Link>
             <Button

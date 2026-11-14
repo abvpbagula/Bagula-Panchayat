@@ -31,9 +31,6 @@ export default function GovHeader() {
   }, [location.pathname]);
 
   const isHome = location.pathname === "/";
-  const isCyberCafe =
-    location.pathname.startsWith("/cyber-cafe") ||
-    location.pathname.startsWith("/apply");
   const isVerify =
     location.pathname.startsWith("/verify") ||
     location.pathname.startsWith("/track");
@@ -78,17 +75,6 @@ export default function GovHeader() {
             }`}
           >
             Home
-          </Link>
-
-          <Link
-            to="/cyber-cafe"
-            className={`whitespace-nowrap shrink-0 py-1 border-b-2 transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-amber-400 rounded-sm ${
-              isCyberCafe
-                ? "text-white border-amber-400 font-semibold"
-                : "text-slate-300 border-transparent hover:text-white hover:border-slate-500"
-            }`}
-          >
-            Cyber Cafe Hub
           </Link>
 
           <Link
@@ -171,8 +157,8 @@ export default function GovHeader() {
                 <Link to="/faq" className="flex items-start gap-2.5 w-full">
                   <HelpCircle className="w-4 h-4 text-slate-700 mt-0.5 shrink-0" aria-hidden="true" />
                   <div className="min-w-0">
-                    <p className="text-xs font-semibold text-slate-900">Operator FAQ &amp; SOP</p>
-                    <p className="text-[11px] text-slate-500">Documents &amp; assisted procedures</p>
+                    <p className="text-xs font-semibold text-slate-900">Service FAQ</p>
+                    <p className="text-[11px] text-slate-500">Documents &amp; application procedures</p>
                   </div>
                 </Link>
               </DropdownMenuItem>
@@ -217,17 +203,6 @@ export default function GovHeader() {
           >
             <span>Home</span>
             <span className="text-xs opacity-75 font-normal">মূল পাতা</span>
-          </Link>
-
-          <Link
-            to="/cyber-cafe"
-            onClick={() => setMobileOpen(false)}
-            className={`min-h-[44px] flex items-center justify-between px-3.5 py-2.5 rounded-xl text-sm font-semibold transition-colors ${
-              isCyberCafe ? "bg-white text-slate-950" : "text-slate-100 hover:bg-white/10"
-            }`}
-          >
-            <span>Cyber Cafe Hub</span>
-            <span className="text-xs opacity-75 font-normal">সাইবার ক্যাফে</span>
           </Link>
 
           <Link
@@ -286,7 +261,7 @@ export default function GovHeader() {
             onClick={() => setMobileOpen(false)}
             className="min-h-[44px] flex items-center justify-between px-3.5 py-2.5 rounded-xl text-sm font-medium text-slate-200 hover:bg-white/10 transition-colors"
           >
-            <span>Operator FAQ &amp; SOP</span>
+            <span>Service FAQ</span>
             <span className="text-xs text-slate-400">Guides</span>
           </Link>
 

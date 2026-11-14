@@ -1,6 +1,6 @@
 /**
  * Password & Passcode Strength Evaluation Engine
- * Enforces Bagula II Gram Panchayat Cyber & Account Security Policy:
+ * Enforces Bagula II Gram Panchayat Digital & Account Security Policy:
  *  - Minimum 8 characters
  *  - At least 1 uppercase letter (A-Z)
  *  - At least 1 lowercase letter (a-z)

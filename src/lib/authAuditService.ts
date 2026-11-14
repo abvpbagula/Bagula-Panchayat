@@ -174,7 +174,7 @@ function getLocalAuditLogs(): AuthAuditLogEntry[] {
     {
       id: "seed-intrusion-2",
       event_type: "auth.route_guard_blocked",
-      actor_email: "nitush8343980898@gmail.com",
+      actor_email: "nitush6488@gmail.com",
       target_super_admin: true,
       is_unauthorized_attempt: true,
       severity: "warning",
@@ -527,19 +527,25 @@ export async function fetchAuthAuditSnapshot(): Promise<AuthAuditSnapshot> {
       status: "active",
       lastLoginAt: new Date(Date.now() - 12 * 60 * 1000).toISOString(),
     },
+    "bagulaiiofficerecords@gmail.com": {
+      displayName: "Super Admin — Office Records (Bagula 2 No GP)",
+      role: "super_admin",
+      status: "active",
+      lastLoginAt: new Date(Date.now() - 8 * 60 * 1000).toISOString(),
+    },
     "nitish374482@gmail.com": {
       displayName: "Secondary Super Admin (Bagula 2 No GP)",
       role: "super_admin",
       status: "active",
       lastLoginAt: new Date(Date.now() - 5 * 60 * 1000).toISOString(),
     },
-    "nitush6488@gmail.com": {
+    "nitush8343980898@gmail.com": {
       displayName: "Executive Officer / Admin Desk",
       role: "admin",
       status: "active",
       lastLoginAt: new Date(Date.now() - 4 * 3600 * 1000).toISOString(),
     },
-    "nitush8343980898@gmail.com": {
+    "nitush6488@gmail.com": {
       displayName: "Data Entry Operator (DEO Counter #1)",
       role: "deo",
       status: "active",

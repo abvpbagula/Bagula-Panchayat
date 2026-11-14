@@ -950,6 +950,51 @@ export type Database = {
         }
         Relationships: []
       }
+      family_trees: {
+        Row: {
+          applicant_name: string
+          created_at: string
+          created_by: string | null
+          head_name: string
+          head_voter_id: string | null
+          id: string
+          language: string
+          memo_no: string | null
+          sansad_no: string | null
+          top_offset_mm: number
+          tree_data: Json
+          updated_at: string
+        }
+        Insert: {
+          applicant_name: string
+          created_at?: string
+          created_by?: string | null
+          head_name: string
+          head_voter_id?: string | null
+          id?: string
+          language?: string
+          memo_no?: string | null
+          sansad_no?: string | null
+          top_offset_mm?: number
+          tree_data: Json
+          updated_at?: string
+        }
+        Update: {
+          applicant_name?: string
+          created_at?: string
+          created_by?: string | null
+          head_name?: string
+          head_voter_id?: string | null
+          id?: string
+          language?: string
+          memo_no?: string | null
+          sansad_no?: string | null
+          top_offset_mm?: number
+          tree_data?: Json
+          updated_at?: string
+        }
+        Relationships: []
+      }
       master_appointment_document_types: {
         Row: {
           appointment_type: string

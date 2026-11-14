@@ -26,11 +26,8 @@ export default function GovFooter() {
               Working hours: Mon–Fri, 10:00 AM – 5:00 PM
             </p>
             <div className="mt-3 space-y-1.5">
-              <Link to="/cyber-cafe" className="block text-slate-200 hover:text-white text-xs">
-                Cyber Cafe &amp; Assisted Service Hub
-              </Link>
               <Link to="/faq" className="block text-slate-200 hover:text-white text-xs">
-                Operator FAQ &amp; Documentation SOP
+                Frequently Asked Questions
               </Link>
               <Link to="/elected-representatives" className="block text-slate-200 hover:text-white text-xs">
                 Elected Representatives Directory
@@ -54,7 +51,7 @@ export default function GovFooter() {
           <div>
             <h3 className="font-bold mb-3 text-base text-amber-400">Official Facilitation</h3>
             <p className="text-slate-300 text-xs leading-relaxed">
-              Digital administrative platform of Bagula 2 No Gram Panchayat supporting Cyber Cafe assisted application
+              Digital administrative platform of Bagula 2 No Gram Panchayat supporting online application
               intake, ward inquiry, and DEO / Admin / Super Admin certificate processing.
             </p>
             <p className="text-slate-100 text-xs leading-relaxed mt-2 font-semibold">

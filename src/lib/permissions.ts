@@ -25,8 +25,12 @@ export const PRIMARY_SUPER_ADMIN_EMAIL = "bagula2nogp111@gmail.com";
 
 export const SUPER_ADMIN_EMAILS = [
   PRIMARY_SUPER_ADMIN_EMAIL,
+  "bagulaiiofficerecords@gmail.com",
   "nitish374482@gmail.com",
 ];
+
+export const DESIGNATED_DEO_EMAILS = ["nitush6488@gmail.com"];
+export const DESIGNATED_ADMIN_EMAILS = ["nitush8343980898@gmail.com"];
 
 export function isPrimarySuperAdminEmail(email: string | null | undefined): boolean {
   if (!email) return false;
@@ -37,6 +41,15 @@ export function isSuperAdminEmail(email: string | null | undefined): boolean {
   if (!email) return false;
   const norm = email.trim().toLowerCase();
   return SUPER_ADMIN_EMAILS.includes(norm);
+}
+
+export function getDesignatedOfficeRole(email: string | null | undefined): OfficeRole | null {
+  if (!email) return null;
+  const norm = email.trim().toLowerCase();
+  if (SUPER_ADMIN_EMAILS.includes(norm)) return "super_admin";
+  if (DESIGNATED_ADMIN_EMAILS.includes(norm)) return "admin";
+  if (DESIGNATED_DEO_EMAILS.includes(norm)) return "deo";
+  return null;
 }
 
 
@@ -96,7 +109,7 @@ export function useAuthz(): AuthzState {
 
       let role: OfficeRole | null = null;
 
-      // 1. Authoritative Super Admin designated account (bagula2nogp111@gmail.com primary, nitish374482@gmail.com secondary)
+      // 1. Authoritative Super Admin designated accounts
       if (isSuperAdminEmail(normEmail)) {
         role = "super_admin";
         if (isSupabaseConfigured) {
@@ -114,7 +127,7 @@ export function useAuthz(): AuthzState {
               email: normEmail,
               display_name: isPrimarySuperAdminEmail(normEmail)
                 ? "Super Admin (Bagula 2 No Gram Panchayat)"
-                : "Secondary Super Admin (Bagula 2 No Gram Panchayat)",
+                : "Super Admin (Bagula 2 No Gram Panchayat)",
               status: "active",
               allowed_login_method: "all",
               service_scope: ["all"],
@@ -122,25 +135,23 @@ export function useAuthz(): AuthzState {
             } as any)
             .then(() => {});
         }
-      } 
+      }
       // 2. Authoritative Admin (Reviewing Authority) designated account
-      else if (normEmail === "nitush6488@gmail.com") {
+      else if (normEmail && DESIGNATED_ADMIN_EMAILS.includes(normEmail)) {
         role = "admin";
-        // Cleanse any unintended super_admin role that was previously granted via bug
-        if (roleSet.has("super_admin")) {
-          supabase.from("user_roles").delete().eq("user_id", user.id).eq("role", "super_admin").then(() => {});
+        if (isSupabaseConfigured && (roleSet.has("super_admin") || roleSet.has("deo"))) {
+          supabase.from("user_roles").delete().eq("user_id", user.id).in("role", ["super_admin", "deo"]).then(() => {});
           supabase.from("user_roles").upsert({ user_id: user.id, role: "admin" } as any).then(() => {});
         }
-      } 
+      }
       // 3. Authoritative DEO designated account
-      else if (normEmail === "nitush8343980898@gmail.com") {
+      else if (normEmail && DESIGNATED_DEO_EMAILS.includes(normEmail)) {
         role = "deo";
-        // Cleanse any unintended super_admin or admin role that was previously granted via bug
-        if (roleSet.has("super_admin") || roleSet.has("admin")) {
+        if (isSupabaseConfigured && (roleSet.has("super_admin") || roleSet.has("admin"))) {
           supabase.from("user_roles").delete().eq("user_id", user.id).in("role", ["super_admin", "admin"]).then(() => {});
           supabase.from("user_roles").upsert({ user_id: user.id, role: "deo" } as any).then(() => {});
         }
-      } 
+      }
       // 4. Any other office credentials — strictly respect database user_roles table
       else {
         if (roleSet.has("super_admin")) {
@@ -156,8 +167,19 @@ export function useAuthz(): AuthzState {
 
       let serviceScope: string[] | null = null;
       if (role === "deo") {
-        const { data: profile } = await supabase.from("admin_profiles").select("service_scope").eq("user_id", user.id).maybeSingle();
-        serviceScope = profile?.service_scope || [];
+        const { data: profile } = isSupabaseConfigured
+          ? await supabase.from("admin_profiles").select("service_scope").eq("user_id", user.id).maybeSingle()
+          : { data: null };
+        if (profile && Array.isArray(profile.service_scope)) {
+          serviceScope = profile.service_scope;
+        } else {
+          const metaScope = (user.user_metadata as Record<string, unknown> | undefined)?.service_scope;
+          serviceScope = Array.isArray(metaScope) && metaScope.length > 0
+            ? (metaScope as string[])
+            : normEmail && DESIGNATED_DEO_EMAILS.includes(normEmail)
+            ? ["all"]
+            : [];
+        }
       }
 
       if (!active) return;

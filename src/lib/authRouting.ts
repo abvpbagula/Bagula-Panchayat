@@ -1,5 +1,10 @@
 import { supabase } from "@/integrations/supabase/client";
-import type { OfficeRole } from "@/lib/permissions";
+import {
+  SUPER_ADMIN_EMAILS,
+  getDesignatedOfficeRole,
+  isSuperAdminEmail,
+  type OfficeRole,
+} from "@/lib/permissions";
 
 export type ResolvedDestination = {
   destination: string;
@@ -10,11 +15,6 @@ export type ResolvedDestination = {
 export interface ResolveDestinationOptions {
   preferredPortal?: "admin" | "auto";
 }
-
-const SUPER_ADMIN_EMAILS = [
-  "bagula2nogp111@gmail.com",
-  "nitish374482@gmail.com",
-];
 
 const ADMIN_EMAILS = [
   ...SUPER_ADMIN_EMAILS,
@@ -33,7 +33,7 @@ export async function resolveUserDestination(
 ): Promise<ResolvedDestination> {
   const normEmail = (email ?? "").trim().toLowerCase();
 
-  if (SUPER_ADMIN_EMAILS.includes(normEmail)) {
+  if (isSuperAdminEmail(normEmail)) {
     supabase
       .from("user_roles")
       .upsert({ user_id: userId, role: "super_admin" } as any)
@@ -78,9 +78,10 @@ export async function resolveUserDestination(
 
   if (roles.length === 0 && ADMIN_EMAILS.includes(normEmail)) {
     const { error: rpcError } = await supabase.rpc("bootstrap_admin_role");
-    if (!rpcError) {
-      if (normEmail === "nitush6488@gmail.com") {
-        return { destination: "/admin/dashboard", role: "admin" };
+    const designated = getDesignatedOfficeRole(normEmail);
+    if (!rpcError || designated) {
+      if (designated === "admin" || designated === "super_admin") {
+        return { destination: "/admin/dashboard", role: designated };
       }
       return { destination: "/admin/deo", role: "deo" };
     }

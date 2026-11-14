@@ -8,16 +8,15 @@ export interface DailySubmissionPoint {
   linkage: number;
   birth: number;
   total: number;
-  cyberCafeDesk: number;
+  publicPortalDesk: number;
   deoCounter: number;
-  cyberCafe: number;
 }
 
 export interface DailyRegistrationPoint {
   date: string;
   displayDate: string;
   assistedOperators: number;
-  cyberNodes: number;
+  officeStaffSessions: number;
   cumulativeOperators: number;
   cumulativeTotal: number;
 }
@@ -145,8 +144,8 @@ export async function fetchAnalyticsData(days: number = 30): Promise<AnalyticsDa
   const hasLiveDbRecords = warishRows.length + dependentRows.length + activityRows.length > 0;
 
   // Initialize daily maps
-  const submissionMap = new Map<string, { warish: number; dependent: number; linkage: number; birth: number; portal: number; deo: number; cyber: number }>();
-  const regMap = new Map<string, { assistedOperators: number; cyber: number }>();
+  const submissionMap = new Map<string, { warish: number; dependent: number; linkage: number; birth: number; portal: number; deo: number }>();
+  const regMap = new Map<string, { assistedOperators: number; officeStaff: number }>();
   const certMap = new Map<string, { submitted: number; approved: number; issued: number; returned: number }>();
 
   for (const k of dateKeys) {
@@ -163,7 +162,7 @@ export async function fetchAnalyticsData(days: number = 30): Promise<AnalyticsDa
     const baseBirth = Math.round((2 + noise * 3) * weekdayMultiplier);
 
     const baseRegOperators = Math.round((1 + noise * 3) * weekdayMultiplier);
-    const baseRegCyber = noise > 0.85 ? 1 : 0;
+    const baseOfficeStaff = noise > 0.85 ? 1 : 0;
 
     const baseApproved = Math.round((baseWarish + baseDep + baseLinkage) * 0.88);
     const baseIssued = Math.max(0, baseApproved - (noise > 0.6 ? 1 : 0));
@@ -174,14 +173,13 @@ export async function fetchAnalyticsData(days: number = 30): Promise<AnalyticsDa
       dependent: baseDep,
       linkage: baseLinkage,
       birth: baseBirth,
-      portal: Math.round((baseWarish + baseDep + baseLinkage) * 0.45),
-      deo: Math.round((baseWarish + baseDep + baseLinkage) * 0.35),
-      cyber: Math.round((baseWarish + baseDep + baseLinkage) * 0.2),
+      portal: Math.round((baseWarish + baseDep + baseLinkage) * 0.55),
+      deo: Math.round((baseWarish + baseDep + baseLinkage) * 0.45),
     });
 
     regMap.set(k, {
       assistedOperators: baseRegOperators,
-      cyber: baseRegCyber,
+      officeStaff: baseOfficeStaff,
     });
 
     certMap.set(k, {
@@ -258,26 +256,25 @@ export async function fetchAnalyticsData(days: number = 30): Promise<AnalyticsDa
       linkage: data.linkage,
       birth: data.birth,
       total,
-      cyberCafeDesk: data.portal,
+      publicPortalDesk: data.portal,
       deoCounter: data.deo,
-      cyberCafe: data.cyber,
     };
   });
 
-  // Compile daily cyber desk / operator metrics & cumulative totals
+  // Compile daily office desk / operator metrics & cumulative totals
   let runningOperators = 42;
-  let runningCyber = 8;
+  let runningOfficeStaff = 8;
   const dailyRegistrations: DailyRegistrationPoint[] = dateKeys.map((key) => {
     const r = regMap.get(key)!;
     runningOperators += r.assistedOperators;
-    runningCyber += r.cyber;
+    runningOfficeStaff += r.officeStaff;
     return {
       date: key,
       displayDate: formatDisplayDate(key),
       assistedOperators: r.assistedOperators,
-      cyberNodes: r.cyber,
+      officeStaffSessions: r.officeStaff,
       cumulativeOperators: runningOperators,
-      cumulativeTotal: runningOperators + runningCyber,
+      cumulativeTotal: runningOperators + runningOfficeStaff,
     };
   });
 
@@ -303,7 +300,7 @@ export async function fetchAnalyticsData(days: number = 30): Promise<AnalyticsDa
     ? Math.round(((recentPeriodSubmissions - prevPeriodSubmissions) / prevPeriodSubmissions) * 100)
     : 12;
 
-  const totalRegistrations = runningOperators + runningCyber;
+  const totalRegistrations = runningOperators + runningOfficeStaff;
   const todayRegistrations = dailyRegistrations[dailyRegistrations.length - 1]?.assistedOperators || 0;
   const registrationGrowth = 18;
 
@@ -401,7 +398,7 @@ export function exportAnalyticsToCsv(dataset: AnalyticsDataset, customFileName?:
     "Birth Digitization",
     "Total Form Submissions",
     "Assisted Desk Intake",
-    "Cyber Node Onboarding",
+    "Office Staff Sessions",
     "Cumulative Desk Activity",
     "Certificates Approved",
     "Certificates Issued",
@@ -409,7 +406,7 @@ export function exportAnalyticsToCsv(dataset: AnalyticsDataset, customFileName?:
   ];
 
   const rows = dataset.dailySubmissions.map((sub, idx) => {
-    const reg = dataset.dailyRegistrations[idx] || { assistedOperators: 0, cyberNodes: 0, cumulativeTotal: 0 };
+    const reg = dataset.dailyRegistrations[idx] || { assistedOperators: 0, officeStaffSessions: 0, cumulativeTotal: 0 };
     const cert = dataset.dailyCertificates[idx] || { approved: 0, issued: 0, returned: 0 };
     return [
       sub.date,
@@ -419,7 +416,7 @@ export function exportAnalyticsToCsv(dataset: AnalyticsDataset, customFileName?:
       sub.birth,
       sub.total,
       reg.assistedOperators,
-      reg.cyberNodes,
+      reg.officeStaffSessions,
       reg.cumulativeTotal,
       cert.approved,
       cert.issued,

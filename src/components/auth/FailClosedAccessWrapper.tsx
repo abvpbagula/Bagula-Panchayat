@@ -29,7 +29,7 @@ export function FailClosedAccessWrapper({
   const access = usePortalAccessState();
   const location = useLocation();
 
-  const portalStatus = access[portal === "cyber_cafe" ? "cyberCafe" : portal];
+  const portalStatus = access[portal];
 
   // While checking, render a smooth skeleton placeholder rather than leaking or flickering
   if (portalStatus?.checking || (portal === "admin" && access.isLoading)) {

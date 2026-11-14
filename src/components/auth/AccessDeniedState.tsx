@@ -15,11 +15,6 @@ interface AccessDeniedStateProps {
 }
 
 const PORTAL_META: Record<PortalKey, { name: string; defaultRole: string; loginUrl: string }> = {
-  cyber_cafe: {
-    name: "Cyber Cafe & Assisted Service Hub (সাইবার ক্যাফে হাব)",
-    defaultRole: "Open Access Service Hub",
-    loginUrl: "/cyber-cafe",
-  },
   elected: {
     name: "Ward Inquiry & Representative Desk (জনপ্রতিনিধি ডেস্ক)",
     defaultRole: "Open Access Directory",

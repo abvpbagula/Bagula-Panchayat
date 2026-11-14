@@ -256,9 +256,57 @@ describe("Office User Password Reset Security Tests", () => {
     it("recognizes bagula2nogp111@gmail.com as the designated Super Admin profile", async () => {
       const { isSuperAdminEmail, SUPER_ADMIN_EMAILS } = await import("../lib/permissions");
       expect(SUPER_ADMIN_EMAILS).toContain("bagula2nogp111@gmail.com");
+      expect(SUPER_ADMIN_EMAILS).toContain("bagulaiiofficerecords@gmail.com");
       expect(isSuperAdminEmail("bagula2nogp111@gmail.com")).toBe(true);
       expect(isSuperAdminEmail("BAGULA2NOGP111@GMAIL.COM")).toBe(true);
+      expect(isSuperAdminEmail("bagulaiiofficerecords@gmail.com")).toBe(true);
       expect(isSuperAdminEmail("other@gmail.com")).toBe(false);
+    });
+  });
+
+  describe("Configured Active Office Credentials (DEO / Admin / Super Admin)", () => {
+    it("maps nitush6488@gmail.com -> deo, nitush8343980898@gmail.com -> admin, bagulaiiofficerecords@gmail.com -> super_admin", async () => {
+      const { getDesignatedOfficeRole } = await import("../lib/permissions");
+      expect(getDesignatedOfficeRole("nitush6488@gmail.com")).toBe("deo");
+      expect(getDesignatedOfficeRole("NITUSH6488@GMAIL.COM")).toBe("deo");
+      expect(getDesignatedOfficeRole("nitush8343980898@gmail.com")).toBe("admin");
+      expect(getDesignatedOfficeRole("bagulaiiofficerecords@gmail.com")).toBe("super_admin");
+      expect(getDesignatedOfficeRole("citizen@example.com")).toBeNull();
+    });
+
+    it("authenticates all three configured accounts with Nitish@374482 and sets matching session roles", async () => {
+      const {
+        verifyConfiguredOfficeLogin,
+        establishConfiguredOfficeSession,
+      } = await import("../lib/tempAdminCredentials");
+
+      const deoRes = verifyConfiguredOfficeLogin("nitush6488@gmail.com", "Nitish@374482");
+      expect(deoRes.matchedAccount).toBe(true);
+      expect(deoRes.success).toBe(true);
+      expect(deoRes.role).toBe("deo");
+
+      const adminRes = verifyConfiguredOfficeLogin("nitush8343980898@gmail.com", "Nitish@374482");
+      expect(adminRes.matchedAccount).toBe(true);
+      expect(adminRes.success).toBe(true);
+      expect(adminRes.role).toBe("admin");
+
+      const superRes = verifyConfiguredOfficeLogin("bagulaiiofficerecords@gmail.com", "Nitish@374482");
+      expect(superRes.matchedAccount).toBe(true);
+      expect(superRes.success).toBe(true);
+      expect(superRes.role).toBe("super_admin");
+
+      const wrongPw = verifyConfiguredOfficeLogin("nitush6488@gmail.com", "WrongPass!1");
+      expect(wrongPw.matchedAccount).toBe(true);
+      expect(wrongPw.success).toBe(false);
+
+      const unknownAcc = verifyConfiguredOfficeLogin("unknown@gmail.com", "Nitish@374482");
+      expect(unknownAcc.matchedAccount).toBe(false);
+      expect(unknownAcc.success).toBe(false);
+
+      const deoSession = establishConfiguredOfficeSession("nitush6488@gmail.com");
+      expect(deoSession?.user?.email).toBe("nitush6488@gmail.com");
+      expect(deoSession?.user?.app_metadata?.role).toBe("deo");
+      expect(sessionStorage.getItem("bagula2_temp_must_change_password")).toBeNull();
     });
   });
 });

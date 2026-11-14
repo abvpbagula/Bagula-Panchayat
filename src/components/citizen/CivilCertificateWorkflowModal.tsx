@@ -370,9 +370,9 @@ I wish him/her every success in life.
                       },
                       {
                         step: 4,
-                        title: "Submit via Cyber Cafe or GP DEO Desk",
-                        bn: "সাইবার ক্যাফে বা পঞ্চায়েত ডিইও ডেস্কে আবেদনপত্র দাখিল",
-                        desc: "Apply directly via the Bagula 2 No Gram Panchayat Cyber Cafe Portal (/apply/warish) by uploading scans of death certificate, affidavit, and heir ID proofs. Alternatively, hand over the physical dossier at the Bagula 2 No Gram Panchayat office DEO counter.",
+                        title: "Submit Online or at GP DEO Desk",
+                        bn: "অনলাইন পোর্টাল বা পঞ্চায়েত ডিইও ডেস্কে আবেদনপত্র দাখিল",
+                        desc: "Apply directly via the Bagula 2 No Gram Panchayat Online Portal (/apply/warish) by uploading scans of death certificate, affidavit, and heir ID proofs. Alternatively, hand over the physical dossier at the Bagula 2 No Gram Panchayat office DEO counter.",
                         tip: "Note your generated Acknowledgment Reference Number for online tracking at /verify.",
                         actor: "Online Portal / GP DEO",
                       },
@@ -635,7 +635,7 @@ I wish him/her every success in life.
                 <div>
                   <p className="text-xs font-bold text-foreground">Ready with all 7 documents?</p>
                   <p className="text-[11px] text-muted-foreground">
-                    Submit your application via the Bagula 2 No Gram Panchayat Cyber Cafe Desk.
+                    Submit your application via the Bagula 2 No Gram Panchayat Online Portal or GP Help Desk.
                   </p>
                 </div>
                 <div className="flex items-center gap-2 w-full sm:w-auto flex-wrap">
@@ -652,7 +652,7 @@ I wish him/her every success in life.
                   </Button>
                   <Button asChild size="sm" className="w-full sm:w-auto text-xs rounded-xl bg-primary text-primary-foreground font-semibold gap-1.5 shadow-sm">
                     <Link to="/apply/warish">
-                      <span>Apply via Cyber Cafe</span>
+                      <span>Apply Online</span>
                       <ArrowRight size={14} />
                     </Link>
                   </Button>
@@ -976,7 +976,7 @@ I wish him/her every success in life.
                 <div>
                   <p className="text-xs font-bold text-foreground">Ready to apply for Dependent Certificate?</p>
                   <p className="text-[11px] text-muted-foreground">
-                    Submit your application via the Bagula 2 No Gram Panchayat Cyber Cafe Desk.
+                    Submit your application via the Bagula 2 No Gram Panchayat Online Portal or GP Help Desk.
                   </p>
                 </div>
                 <div className="flex items-center gap-2 w-full sm:w-auto">
@@ -987,7 +987,7 @@ I wish him/her every success in life.
                   </Button>
                   <Button asChild size="sm" className="w-full sm:w-auto text-xs rounded-xl bg-primary text-primary-foreground font-semibold gap-1.5 shadow-sm">
                     <Link to="/apply/dependent">
-                      <span>Apply via Cyber Cafe</span>
+                      <span>Apply Online</span>
                       <ArrowRight size={14} />
                     </Link>
                   </Button>
@@ -1064,7 +1064,7 @@ I wish him/her every success in life.
                       : "text-muted-foreground hover:text-foreground"
                   }`}
                 >
-                  Legal &amp; SOP (আইন ও নিয়ম)
+                  Legal Rules (আইন ও নিয়ম)
                 </button>
                 <button
                   type="button"
@@ -1135,8 +1135,8 @@ I wish him/her every success in life.
                       },
                       {
                         step: 5,
-                        title: "Portal Entry at Cyber Cafe (CSC) / GP DEO Counter",
-                        bengali: "সাইবার ক্যাফে বা পঞ্চায়েত ডিইও ডেস্কে তথ্য এন্ট্রি ও ড্রাফট তৈরি",
+                        title: "Portal Entry at Online Portal / GP DEO Counter",
+                        bengali: "অনলাইন পোর্টাল বা পঞ্চায়েত ডিইও ডেস্কে তথ্য এন্ট্রি ও ড্রাফট তৈরি",
                         desc: "The authorized operator enters all details in the Bagula II GP Linkage Certificate Engine. An official computerized draft is generated with a secure verification hash and QR code.",
                         badge: "Online / Offline Draft",
                       },
@@ -1272,7 +1272,7 @@ I wish him/her every success in life.
                 </div>
               )}
 
-              {/* Sub-tab 3: Legal Framework & SOP Rules */}
+              {/* Sub-tab 3: Legal Framework & Rules */}
               {selectedSubTab === "legal" && (
                 <div className="space-y-4">
                   <div className="grid sm:grid-cols-2 gap-3">
@@ -1304,7 +1304,7 @@ I wish him/her every success in life.
                   <div className="p-3.5 rounded-xl bg-amber-50/80 border border-amber-200 text-xs text-amber-950 space-y-1">
                     <p className="font-semibold text-amber-900 flex items-center gap-1.5">
                       <AlertCircle size={14} className="text-amber-700" />
-                      Cyber Cafe &amp; Operator Advisory (পরামর্শ ও সতর্কতা):
+                      Applicant &amp; Staff Advisory (পরামর্শ ও সতর্কতা):
                     </p>
                     <p className="leading-relaxed text-[11px]">
                       1. Always cross-check the spelling of the Father's name on the Madhyamik Admit Card with the Draft Electoral Roll 2025.

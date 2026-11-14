@@ -23,7 +23,6 @@ import {
   Sliders,
   ShieldCheck,
   Building2,
-  Video,
   Search,
   Download,
   Upload,
@@ -62,12 +61,11 @@ import { AdminDelayedDocsMasterManager } from "@/components/admin/AdminDelayedDo
 import { AdminRulesManager } from "@/components/admin/AdminRulesManager";
 import { AdminValidationManager } from "@/components/admin/AdminValidationManager";
 import { AdminAuthorityManager } from "@/components/admin/AdminAuthorityManager";
-import { AdminSopGuidesManager } from "@/components/admin/AdminSopGuidesManager";
 import { AdminMembersManager } from "@/components/admin/AdminMembersManager";
 import { AdminForcedLogoutManager } from "@/components/admin/AdminForcedLogoutManager";
 import { SecurityGovernanceCard } from "@/components/admin/SecurityGovernanceCard";
 
-type MainTab = "registries" | "security_governance" | "rules" | "validation" | "authority" | "sop_guides" | "members" | "session_security";
+type MainTab = "registries" | "security_governance" | "rules" | "validation" | "authority" | "members" | "session_security";
 
 export default function AdminMasterData() {
   const authz = useAuthz();
@@ -100,7 +98,6 @@ export default function AdminMasterData() {
   const [seeding, setSeeding] = useState(false);
 
   const loadCategory = async (cat: MasterCategory) => {
-    if (cat === "sop_guides") return;
     setLoading(true);
     const { data, error } = await supabase
       .from("master_data" as never)
@@ -126,7 +123,7 @@ export default function AdminMasterData() {
   };
 
   useEffect(() => {
-    if (activeTab === "registries" && category !== "sop_guides") {
+    if (activeTab === "registries") {
       loadCategory(category);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -319,15 +316,13 @@ export default function AdminMasterData() {
   const handleSeedDefaults = async () => {
     setSeeding(true);
     try {
-      const result = await seedDefaultMasterData(category === "sop_guides" ? undefined : category);
+      const result = await seedDefaultMasterData(category);
       MasterDataService.clearCache();
-      broadcastMasterDataUpdate(category === "sop_guides" ? undefined : category);
+      broadcastMasterDataUpdate(category);
       toast.success(
         `Default seeding complete! Added: ${result.added} new records, Skipped: ${result.skipped} existing records.`
       );
-      if (category !== "sop_guides") {
-        loadCategory(category);
-      }
+      loadCategory(category);
     } catch (e: any) {
       toast.error(e.message || "Could not seed defaults");
     } finally {
@@ -497,15 +492,6 @@ export default function AdminMasterData() {
 
           <Button
             size="sm"
-            variant={activeTab === "sop_guides" ? "default" : "ghost"}
-            onClick={() => setActiveTab("sop_guides")}
-            className="rounded-xl text-xs gap-1.5 font-medium"
-          >
-            <Video size={14} /> 🎬 SOPs, Workflows & Videos
-          </Button>
-
-          <Button
-            size="sm"
             variant={activeTab === "members" ? "default" : "ghost"}
             onClick={() => setActiveTab("members")}
             className="rounded-xl text-xs gap-1.5 font-medium"
@@ -540,7 +526,7 @@ export default function AdminMasterData() {
             {/* Category Pills & Actions */}
             <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
               <div className="flex flex-wrap items-center gap-1.5">
-                {MASTER_CATEGORIES.filter((c) => c.key !== "sop_guides").map((c) => (
+                {MASTER_CATEGORIES.map((c) => (
                   <Button
                     key={c.key}
                     size="sm"
@@ -849,14 +835,7 @@ export default function AdminMasterData() {
         )}
 
         {/* =================================================================== */}
-        {/* TAB 5: SOPS, WORKFLOWS & VIDEOS                                     */}
-        {/* =================================================================== */}
-        {activeTab === "sop_guides" && (
-          <AdminSopGuidesManager />
-        )}
-
-        {/* =================================================================== */}
-        {/* TAB 6: ELECTED MEMBERS & POLITICAL PARTIES                          */}
+        {/* TAB 5: ELECTED MEMBERS & POLITICAL PARTIES                          */}
         {/* =================================================================== */}
         {activeTab === "members" && (
           <AdminMembersManager />

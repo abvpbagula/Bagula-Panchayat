@@ -117,7 +117,7 @@ export const DashboardSection: React.FC<DashboardSectionProps> = ({ onNavigate }
     }
   };
 
-  const handleToggleCyberIntake = async (checked: boolean) => {
+  const handleTogglePublicIntake = async (checked: boolean) => {
     if (!featureFlags) return;
     setUpdating(true);
     const updated = { ...featureFlags, citizenOnlineApply: checked };
@@ -125,7 +125,7 @@ export const DashboardSection: React.FC<DashboardSectionProps> = ({ onNavigate }
     const res = await saveFeatureFlagsConfig(updated);
     setUpdating(false);
     if (res.success) {
-      toast.success(checked ? "Cyber Cafe Online Intake enabled." : "Cyber Cafe Online Intake paused.");
+      toast.success(checked ? "Public Online Intake enabled." : "Public Online Intake paused.");
     } else {
       toast.error(res.error || "Failed to update feature flag");
     }
@@ -254,7 +254,7 @@ export const DashboardSection: React.FC<DashboardSectionProps> = ({ onNavigate }
                 <span>Public Emergency Notice Banner</span>
               </div>
               <p className="text-[11px] text-muted-foreground mt-0.5">
-                Displays top emergency ribbon on Cyber Cafe Portal and application pages.
+                Displays top emergency ribbon on Public Portal and application pages.
               </p>
             </div>
             <div className="flex items-center gap-2">
@@ -273,16 +273,16 @@ export const DashboardSection: React.FC<DashboardSectionProps> = ({ onNavigate }
             <div>
               <div className="text-xs font-semibold text-foreground flex items-center gap-1.5">
                 <Users className="h-3.5 w-3.5 text-blue-500" />
-                <span>Cyber Cafe Online Application Intake</span>
+                <span>Public Online Application Intake</span>
               </div>
               <p className="text-[11px] text-muted-foreground mt-0.5">
-                Allows open Cyber Cafe &amp; Assisted Desks to submit Warish, Dependent, and Linkage forms.
+                Allows Public Portal and Assisted Desks to submit Warish, Dependent, and Linkage forms.
               </p>
             </div>
             <div className="flex items-center gap-2">
               <Switch
                 checked={featureFlags?.citizenOnlineApply || false}
-                onCheckedChange={handleToggleCyberIntake}
+                onCheckedChange={handleTogglePublicIntake}
                 disabled={updating || !featureFlags}
               />
               <span className="text-xs font-medium w-12 text-right">

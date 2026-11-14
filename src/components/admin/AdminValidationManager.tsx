@@ -173,7 +173,7 @@ export function AdminValidationManager({ initialRules, onSaved }: Props) {
               />
               <span className="text-xs text-muted-foreground font-medium">KB</span>
             </div>
-            <p className="text-[11px] text-muted-foreground">SBHI SOP Case-I manual cert limit (100 KB).</p>
+            <p className="text-[11px] text-muted-foreground">SBHI Case-I manual cert limit (100 KB).</p>
           </div>
 
           <div className="space-y-1.5">

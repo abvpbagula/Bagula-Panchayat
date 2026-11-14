@@ -14,7 +14,6 @@ import { DependentCertificateForm } from "@/pages/DependentCertificate";
 import { useWhatsNew } from "@/hooks/useWhatsNew";
 import { VerifyQuickAction } from "@/components/VerifyQuickAction";
 import { ExternalRedirectModal } from "@/components/ExternalRedirectModal";
-import { ServiceInformationViewer } from "@/components/services/ServiceInformationViewer";
 import CivilCertificateWorkflowModal from "@/components/citizen/CivilCertificateWorkflowModal";
 import { getRedirectGuide, type RedirectGuide } from "@/data/redirectGuides";
 import { useBirthDigitalizationRule } from "@/lib/birthDigitalizationRule";
@@ -23,8 +22,6 @@ import { useAuthz } from "@/lib/permissions";
 import { useServiceCategories } from "@/hooks/useServiceCategories";
 import { CitizenFaqSection } from "@/components/citizen/CitizenFaqSection";
 import { CitizenNoticeBoard } from "@/components/citizen/CitizenNoticeBoard";
-import { CyberToolsAndGovernmentPortals } from "@/components/tools/CyberToolsAndGovernmentPortals";
-import { CitizenSopAndHelpCenter } from "@/components/citizen/CitizenSopAndHelpCenter";
 import { usePortalAccessState } from "@/lib/portalAccessControl";
 import { AnnouncementTicker } from "@/components/home/AnnouncementTicker";
 import { HomeLayers } from "@/components/home/HomeLayers";
@@ -68,7 +65,7 @@ export const SERVICE_CATEGORIES: ServiceCategoryDef[] = [
         desc: "Succession certificate under West Bengal Panchayat Act 1973 for mutation and bank settlement.",
         guideKey: "warish-workflow",
         applyUrl: "/apply/warish",
-        applyLabel: "Apply via Cyber Cafe",
+        applyLabel: "Apply Online",
         icon: "📜",
         turnaround: "7 - 10 Days",
       },
@@ -79,7 +76,7 @@ export const SERVICE_CATEGORIES: ServiceCategoryDef[] = [
         desc: "Family dependency certificate for railway pass, medical reimbursement and welfare benefits.",
         guideKey: "dependent-workflow",
         applyUrl: "/apply/dependent",
-        applyLabel: "Apply via Cyber Cafe",
+        applyLabel: "Apply Online",
         icon: "👤",
         turnaround: "5 - 7 Days",
       },
@@ -143,7 +140,7 @@ export const SERVICE_CATEGORIES: ServiceCategoryDef[] = [
         id: "birth-digitalization",
         title: "Existing Digital Birth Certificate",
         bengaliTitle: "পুরাতন হস্তলিখিত জন্ম শংসাপত্র ডিজিটালাইজেশন",
-        desc: "Legacy handwritten certificate pre-verification SOP for Sub-Registrar validation.",
+        desc: "Legacy handwritten certificate pre-verification process for Sub-Registrar validation.",
         guideKey: "birth-digitalization",
         applyUrl: "/birth-digitization-form",
         applyLabel: "Fill A4 Digitization Form",
@@ -322,8 +319,8 @@ const quickServices = [
 ];
 
 const allServices = [
-  { title: "Warish Certificate", desc: "Legal heir & succession workflow and Cyber Cafe apply", guideKey: "warish-workflow", to: "/apply/warish", icon: "📜" },
-  { title: "Dependent Certificate", desc: "Family dependency certificate workflow and Cyber Cafe apply", guideKey: "dependent-workflow", to: "/apply/dependent", icon: "👤" },
+  { title: "Warish Certificate", desc: "Legal heir & succession workflow and online application", guideKey: "warish-workflow", to: "/apply/warish", icon: "📜" },
+  { title: "Dependent Certificate", desc: "Family dependency certificate workflow and online application", guideKey: "dependent-workflow", to: "/apply/dependent", icon: "👤" },
   { title: "PRD Tax", desc: "Property tax via WB portal", guideKey: "prd-tax", icon: "💳" },
   { title: "MNREGA Jobs", desc: "View job cards & workers", guideKey: "mnrega-jobcard", icon: "👷" },
   { title: "Birth Registration", desc: "New birth registration", guideKey: "birth-new", icon: "👶" },
@@ -391,8 +388,6 @@ export default function Index() {
   const [expandedDate, setExpandedDate] = useState<string | null>(getTodayStr());
   const [redirectGuide, setRedirectGuide] = useState<RedirectGuide | null>(null);
   const [redirectModalOpen, setRedirectModalOpen] = useState(false);
-  const [selectedGuideKey, setSelectedGuideKey] = useState<string>("wbpms-residential");
-  const [serviceViewerOpen, setServiceViewerOpen] = useState(false);
   const [activeCategoryFilter, setActiveCategoryFilter] = useState<string>("all");
   const [expandedCategoryId, setExpandedCategoryId] = useState<string | null>("direct-panchayat");
   const [civilWorkflowOpen, setCivilWorkflowOpen] = useState(false);
@@ -404,9 +399,8 @@ export default function Index() {
   const { categories: serviceCategories, loading: serviceCategoriesLoading } = useServiceCategories();
 
   const openGuide = (key: string) => {
-    setSelectedGuideKey(key);
     setRedirectGuide(getRedirectGuide(key));
-    setServiceViewerOpen(true);
+    setRedirectModalOpen(true);
   };
 
   const openCivilWorkflow = (tab: "warish" | "dependent") => {
@@ -478,7 +472,7 @@ export default function Index() {
                     Public Service Hub — Bagula 2 No Gram Panchayat
                   </h2>
                   <p className="text-xs text-muted-foreground">
-                    Progressive e-governance information: Select a category to view authorized SOPs, required documents & official portals
+                    Progressive e-governance information: Select a category to view required documents &amp; official portals
                   </p>
                 </div>
               </div>
@@ -580,7 +574,7 @@ export default function Index() {
                                 onClick={() => openGuide(svc.guideKey)}
                               >
                                 <BookOpen size={13} />
-                                <span>View SOP & Info</span>
+                                <span>View Documents &amp; Portal</span>
                               </Button>
                             ) : null}
 
@@ -619,7 +613,7 @@ export default function Index() {
                     Comprehensive Citizen Document Guidelines & Rules
                   </p>
                   <p className="text-[11px] text-muted-foreground">
-                    Official list of accepted identity and residential proofs under West Bengal Panchayat SOPs
+                    Official list of accepted identity and residential proofs under West Bengal Panchayat guidelines
                   </p>
                 </div>
               </div>
@@ -721,7 +715,7 @@ export default function Index() {
                   className="w-full sm:w-auto flex-1 rounded-xl bg-primary text-primary-foreground text-xs font-semibold gap-1.5 shadow-xs"
                 >
                   <Link to="/apply/warish">
-                    <span>Apply via Cyber Cafe</span>
+                    <span>Apply Online</span>
                     <ArrowRight size={14} />
                   </Link>
                 </Button>
@@ -798,7 +792,7 @@ export default function Index() {
                   className="w-full sm:w-auto flex-1 rounded-xl bg-primary text-primary-foreground text-xs font-semibold gap-1.5 shadow-xs"
                 >
                   <Link to="/apply/dependent">
-                    <span>Apply via Cyber Cafe</span>
+                    <span>Apply Online</span>
                     <ArrowRight size={14} />
                   </Link>
                 </Button>
@@ -867,7 +861,7 @@ export default function Index() {
                   className="w-full sm:w-auto flex-1 rounded-xl text-xs font-semibold gap-1.5 border-emerald-600/30 text-emerald-800 hover:bg-emerald-50"
                 >
                   <BookOpen size={14} />
-                  <span>View Requirements &amp; SOP</span>
+                  <span>View Requirements</span>
                 </Button>
                 <Button
                   asChild
@@ -875,7 +869,7 @@ export default function Index() {
                   className="w-full sm:w-auto flex-1 rounded-xl bg-emerald-700 hover:bg-emerald-800 text-white text-xs font-semibold gap-1.5 shadow-xs"
                 >
                   <Link to="/apply/linkage">
-                    <span>Apply via Cyber Cafe</span>
+                    <span>Apply Online</span>
                     <ArrowRight size={14} />
                   </Link>
                 </Button>
@@ -996,7 +990,7 @@ export default function Index() {
 
             <div className="rounded-2xl border border-border/60 bg-white/70 backdrop-blur-sm p-4 flex flex-col sm:flex-row items-center justify-between gap-3 text-xs">
               <div className="space-y-0.5 text-center sm:text-left">
-                <p className="font-semibold text-foreground">Looking for detailed answers &amp; SOP guidelines?</p>
+                <p className="font-semibold text-foreground">Looking for detailed answers &amp; guidelines?</p>
                 <p className="text-muted-foreground">Visit our dedicated Citizen Information Desk &amp; Frequently Asked Questions section.</p>
               </div>
               <Button
@@ -1071,15 +1065,7 @@ export default function Index() {
         <div className="h-[env(safe-area-inset-bottom)]" />
       </nav>
 
-      {/* Unified Service Information Viewer (Overview, Eligibility, Documents, SOP, Video, Form, Redirect) */}
-      <ServiceInformationViewer
-        guideKey={selectedGuideKey}
-        initialGuide={redirectGuide}
-        open={serviceViewerOpen}
-        onOpenChange={setServiceViewerOpen}
-      />
-
-      {/* Safe External Redirect Modal with Workflows & Video Tutorials (Fallback) */}
+      {/* Safe External Redirect Modal with Workflows & Video Tutorials */}
       <ExternalRedirectModal
         guide={redirectGuide}
         open={redirectModalOpen}

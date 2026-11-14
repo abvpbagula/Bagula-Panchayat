@@ -106,7 +106,7 @@ export default function AdminAnalytics() {
     const dailyCertificates = data.dailyCertificates.filter((d) => d.date >= start && d.date <= end);
 
     const totalSubmissions = dailySubmissions.reduce((acc, s) => acc + s.total, 0);
-    const totalRegistrations = dailyRegistrations.reduce((acc, r) => acc + r.assistedOperators + r.cyberNodes, 0);
+    const totalRegistrations = dailyRegistrations.reduce((acc, r) => acc + r.assistedOperators + r.officeStaffSessions, 0);
     const totalCertificatesGenerated = dailyCertificates.reduce((acc, c) => acc + c.issued, 0);
 
     return {
@@ -217,7 +217,7 @@ export default function AdminAnalytics() {
               📈 Application Usage & Analytics Dashboard
             </h1>
             <p className="text-xs text-muted-foreground">
-              Statistical breakdown of daily form submissions, Cyber Cafe &amp; DEO intake velocity, and certificate generation.
+              Statistical breakdown of daily form submissions, Public Portal &amp; DEO intake velocity, and certificate generation.
             </p>
           </div>
 
@@ -360,11 +360,11 @@ export default function AdminAnalytics() {
             </CardContent>
           </Card>
 
-          {/* Cyber Cafe & Assisted Sessions */}
+          {/* Assisted & DEO Sessions */}
           <Card className="border-border/50 bg-white/90 shadow-xs hover:shadow-sm transition-all">
             <CardHeader className="flex flex-row items-center justify-between pb-2 space-y-0">
               <CardTitle className="text-xs font-semibold text-muted-foreground uppercase tracking-wider">
-                Cyber &amp; Assisted Intake
+                Assisted &amp; DEO Intake
               </CardTitle>
               <div className="w-8 h-8 rounded-lg bg-violet-100 flex items-center justify-center text-violet-700">
                 <Users size={16} />
@@ -480,7 +480,7 @@ export default function AdminAnalytics() {
                     Daily Form Submissions Trend (Warish, Dependent, Linkage, Birth)
                   </CardTitle>
                   <CardDescription className="text-xs mt-0.5">
-                    Continuous timeline of Cyber Cafe &amp; DEO submissions over {rangeMode === "custom" ? "the selected custom period" : `the past ${days} days`}.
+                    Continuous timeline of Public Portal &amp; DEO submissions over {rangeMode === "custom" ? "the selected custom period" : `the past ${days} days`}.
                   </CardDescription>
                 </div>
                 <div className="flex items-center gap-1.5">
@@ -738,7 +738,7 @@ export default function AdminAnalytics() {
                     Form Submissions By Service & Intake Channel
                   </CardTitle>
                   <CardDescription className="text-xs">
-                    Analyze daily application intake by service kind or submission source (Cyber Cafe Hub, DEO Counter, CSC Centers).
+                    Analyze daily application intake by service kind or submission source (Public Portal, DEO Office Counter).
                   </CardDescription>
                 </div>
                 <div className="flex items-center gap-2">
@@ -788,15 +788,15 @@ export default function AdminAnalytics() {
             </Card>
 
             {/* Submission Intake Channels Breakdown */}
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <Card className="border-border/40 bg-white/80 p-4 space-y-2">
                 <div className="flex items-center justify-between">
-                  <span className="text-xs font-semibold text-muted-foreground">Cyber Cafe Hub Direct</span>
-                  <Badge variant="outline" className="text-[10px] bg-sky-50 text-sky-700">Open Desk</Badge>
+                  <span className="text-xs font-semibold text-muted-foreground">Public Online Portal</span>
+                  <Badge variant="outline" className="text-[10px] bg-sky-50 text-sky-700">Open Portal</Badge>
                 </div>
-                <p className="text-2xl font-bold font-mono text-foreground">45%</p>
+                <p className="text-2xl font-bold font-mono text-foreground">55%</p>
                 <p className="text-[11px] text-muted-foreground">
-                  Applications initiated through the open-access Cyber Cafe Hub without account barriers.
+                  Applications initiated directly through the open-access Public Portal without account barriers.
                 </p>
               </Card>
 
@@ -805,20 +805,9 @@ export default function AdminAnalytics() {
                   <span className="text-xs font-semibold text-muted-foreground">DEO Office Counter</span>
                   <Badge variant="outline" className="text-[10px] bg-violet-50 text-violet-700">Counter Desk</Badge>
                 </div>
-                <p className="text-2xl font-bold font-mono text-foreground">35%</p>
+                <p className="text-2xl font-bold font-mono text-foreground">45%</p>
                 <p className="text-[11px] text-muted-foreground">
                   In-office data entry operators assisting walk-in applicants and complex legal heir family trees.
-                </p>
-              </Card>
-
-              <Card className="border-border/40 bg-white/80 p-4 space-y-2">
-                <div className="flex items-center justify-between">
-                  <span className="text-xs font-semibold text-muted-foreground">Cyber Cafe CSC Nodes</span>
-                  <Badge variant="outline" className="text-[10px] bg-emerald-50 text-emerald-700">CSC Verified</Badge>
-                </div>
-                <p className="text-2xl font-bold font-mono text-foreground">20%</p>
-                <p className="text-[11px] text-muted-foreground">
-                  Authorized village common service centers (Trust Media, Nayan Mondal CSC) processing high-res scans.
                 </p>
               </Card>
             </div>
@@ -831,14 +820,14 @@ export default function AdminAnalytics() {
                 <CardTitle className="text-sm font-semibold flex items-center justify-between">
                     <span className="flex items-center gap-2">
                     <Users size={16} className="text-primary" />
-                    Daily Cyber Cafe Desk &amp; DEO Activity
+                    Daily Office &amp; Assisted Desk Activity
                   </span>
                   <span className="text-xs font-normal text-muted-foreground">
                     Total Logged: <strong className="text-foreground">{summary?.totalRegistrations} sessions</strong>
                   </span>
                 </CardTitle>
                 <CardDescription className="text-xs">
-                  Assisted desk operator intake vs authorized cyber cafe node onboarding over time.
+                  Assisted desk operator intake vs office staff sessions over time.
                 </CardDescription>
               </CardHeader>
               <CardContent>
@@ -861,8 +850,8 @@ export default function AdminAnalytics() {
                       />
                       <Line
                         type="monotone"
-                        dataKey="cyberNodes"
-                        name="New Cyber Cafe Nodes"
+                        dataKey="officeStaffSessions"
+                        name="Office Staff Sessions"
                         stroke="#0284c7"
                         strokeWidth={2}
                         dot={{ r: 3 }}
@@ -873,7 +862,7 @@ export default function AdminAnalytics() {
               </CardContent>
             </Card>
 
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div className="grid grid-cols-1 gap-4">
               <Card className="border-border/40 bg-white/80 p-4 space-y-2">
                 <h3 className="text-xs font-semibold text-foreground flex items-center gap-1.5">
                   <ShieldCheck size={14} className="text-emerald-600" />
@@ -885,21 +874,6 @@ export default function AdminAnalytics() {
                 <div className="flex items-center gap-2 pt-2">
                   <Button asChild variant="outline" size="sm" className="h-7 text-xs">
                     <Link to="/admin/profiles-directory?tab=deos">View DEO Directory</Link>
-                  </Button>
-                </div>
-              </Card>
-
-              <Card className="border-border/40 bg-white/80 p-4 space-y-2">
-                <h3 className="text-xs font-semibold text-foreground flex items-center gap-1.5">
-                  <Building2 size={14} className="text-primary" />
-                  Cyber Cafe & CSC Node Network
-                </h3>
-                <p className="text-xs text-muted-foreground">
-                  <strong className="text-foreground">8 authorized Cyber Cafe centers</strong> operate across Bagula 2 No Gram Panchayat under daily quota caps (50 applications/day) with Super Admin audit logging.
-                </p>
-                <div className="flex items-center gap-2 pt-2">
-                  <Button asChild variant="outline" size="sm" className="h-7 text-xs">
-                    <Link to="/admin/profiles-directory?tab=cyber">Manage Cyber Nodes</Link>
                   </Button>
                 </div>
               </Card>

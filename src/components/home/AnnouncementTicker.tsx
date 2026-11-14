@@ -41,7 +41,7 @@ const CAMP_AND_SPECIAL_UPDATES: Notice[] = [
     department: "Succession, Legal Heir & Citizen Welfare Department",
     department_bn: "ওয়ারিশান, উত্তরাধিকার ও নাগরিক পরিষেবা শাখা",
     content:
-      "A dedicated facilitation desk is active at the Bagula II Gram Panchayat auditorium every Monday and Thursday (10:00 AM to 3:30 PM). Citizens can get their Warish (Legal Heir) draft documents pre-verified by Sansad representatives and submit succession applications without cyber-cafe delays. Required: Original death certificate, family tree declaration, land ROR/Khatian copies.",
+      "A dedicated facilitation desk is active at the Bagula II Gram Panchayat auditorium every Monday and Thursday (10:00 AM to 3:30 PM). Citizens can get their Warish (Legal Heir) draft documents pre-verified by Sansad representatives and submit succession applications without delays. Required: Original death certificate, family tree declaration, land ROR/Khatian copies.",
     is_pinned: true,
     is_published: true,
     priority: "urgent",

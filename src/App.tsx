@@ -18,18 +18,17 @@ import { PrivatePasscodeGate } from "@/components/security/PrivatePasscodeGate";
 
 // Route-level code splitting for faster initial load
 const FaqPage = lazy(() => import("./pages/FaqPage.tsx"));
-const ServiceDetailPage = lazy(() => import("./pages/ServiceDetailPage"));
 const DependentCertificate = lazy(() => import("./pages/DependentCertificate.tsx"));
 const WarishCertificate = lazy(() => import("./pages/WarishCertificate.tsx"));
 const LinkageCertificate = lazy(() => import("./pages/LinkageCertificate.tsx"));
 const ScStLineageVerification = lazy(() => import("./pages/ScStLineageVerification.tsx"));
+const FamilyTreeGenerator = lazy(() => import("./pages/FamilyTreeGenerator.tsx"));
 const WarishApplicationFormPage = lazy(() => import("./pages/WarishApplicationFormPage.tsx"));
 const BirthDigitizationFormPage = lazy(() => import("./pages/BirthDigitizationFormPage.tsx"));
 const DelayedRegistrationPage = lazy(() => import("./pages/DelayedRegistrationPage.tsx"));
 const WbpmsInfo = lazy(() => import("./pages/WbpmsInfo.tsx"));
 const ElectedRepresentatives = lazy(() => import("./pages/ElectedRepresentatives.tsx"));
 const ElectedMemberPortal = lazy(() => import("./pages/ElectedMemberPortal.tsx"));
-const CyberCafePortal = lazy(() => import("./pages/CyberCafePortal.tsx"));
 const Verify = lazy(() => import("./pages/Verify.tsx"));
 const PublicTracker = lazy(() => import("./pages/PublicTracker.tsx"));
 const DarHub = lazy(() => import("./pages/dar/DarHub.tsx"));
@@ -66,12 +65,6 @@ const NotFound = lazy(() => import("./pages/NotFound.tsx"));
 
 const queryClient = new QueryClient();
 
-function LegacyPublicApplyRedirect() {
-  const { kind } = useParams();
-  const safeKind = kind === "dependent" || kind === "linkage" ? kind : "warish";
-  return <Navigate to={`/apply/${safeKind}`} replace />;
-}
-
 function RouteLoadingFallback() {
   return (
     <div
@@ -104,13 +97,22 @@ function AppLayout() {
             <Route path="/journey" element={<PrivatePasscodeGate standaloneMode />} />
             <Route path="/faq" element={<FaqPage />} />
             <Route path="/dar" element={<DarHub />} />
-            <Route path="/service/:slug" element={<ServiceDetailPage />} />
             <Route path="/dependent-certificate" element={<RequireAdmin><DependentCertificate /></RequireAdmin>} />
             <Route path="/warish-certificate" element={<RequireAdmin><WarishCertificate /></RequireAdmin>} />
             <Route path="/linkage-certificate" element={<RequireAdmin><LinkageCertificate /></RequireAdmin>} />
             <Route path="/sc-st-lineage" element={<ScStLineageVerification />} />
             <Route path="/paternal-lineage" element={<ScStLineageVerification />} />
             <Route path="/caste-lineage" element={<ScStLineageVerification />} />
+            <Route
+              path="/family-tree-generator"
+              element={
+                <RequireAdmin>
+                  <ErrorBoundary name="FamilyTreeGenerator">
+                    <FamilyTreeGenerator />
+                  </ErrorBoundary>
+                </RequireAdmin>
+              }
+            />
             <Route path="/warish-application-form" element={<WarishApplicationFormPage />} />
             <Route path="/warish-form" element={<WarishApplicationFormPage />} />
             <Route path="/birth-digitization-form" element={<BirthDigitizationFormPage />} />
@@ -122,12 +124,11 @@ function AppLayout() {
             <Route path="/wbpms-info" element={<WbpmsInfo />} />
             <Route path="/elected-representatives" element={<ElectedRepresentatives />} />
             <Route path="/elected-portal" element={<ElectedMemberPortal />} />
-            <Route path="/cyber-cafe" element={<CyberCafePortal />} />
             <Route
               path="/apply/:kind"
               element={
-                <ErrorBoundary name="CyberCafeApplicationWizard">
-                  <ApplicationWizard cyberCafeMode />
+                <ErrorBoundary name="PublicApplicationWizard">
+                  <ApplicationWizard publicApplyMode />
                 </ErrorBoundary>
               }
             />
@@ -137,12 +138,6 @@ function AppLayout() {
             <Route path="/tracker" element={<PublicTracker />} />
             <Route path="/accountability-tracker" element={<PublicTracker />} />
             <Route path="/wb-tracker" element={<PublicTracker />} />
-
-            {/* Legacy /public/* redirects cleanly into open-access Cyber Cafe Hub */}
-            <Route path="/public" element={<Navigate to="/cyber-cafe" replace />} />
-            <Route path="/public/faq" element={<Navigate to="/faq" replace />} />
-            <Route path="/public/apply/:kind" element={<LegacyPublicApplyRedirect />} />
-            <Route path="/public/*" element={<Navigate to="/cyber-cafe" replace />} />
 
             <Route path="/.lovable/oauth/consent" element={<OAuthConsent />} />
 
@@ -162,13 +157,13 @@ function AppLayout() {
             <Route path="/admin/review" element={<RequireAdmin><ErrorBoundary name="AdminReview"><AdminReview /></ErrorBoundary></RequireAdmin>} />
             <Route path="/admin/warish" element={<RequireAdmin><RequirePermission permission="warish_certs"><ErrorBoundary name="AdminWarishList"><AdminWarishList /></ErrorBoundary></RequirePermission></RequireAdmin>} />
             <Route path="/admin/dependent" element={<RequireAdmin><RequirePermission permission="dependent_certs"><ErrorBoundary name="AdminDependentList"><AdminDependentList /></ErrorBoundary></RequirePermission></RequireAdmin>} />
+            <Route path="/admin/family-tree" element={<RequireAdmin><ErrorBoundary name="FamilyTreeGenerator"><FamilyTreeGenerator /></ErrorBoundary></RequireAdmin>} />
             <Route path="/admin/notices" element={<RequireAdmin><RequirePermission permission="notices"><ErrorBoundary name="AdminWhatsNew"><AdminWhatsNew /></ErrorBoundary></RequirePermission></RequireAdmin>} />
             <Route path="/admin/whats-new" element={<RequireAdmin><RequirePermission permission="notices"><ErrorBoundary name="AdminWhatsNew"><AdminWhatsNew /></ErrorBoundary></RequirePermission></RequireAdmin>} />
             <Route path="/admin/manage" element={<RequireAdmin><RequirePermission permission="admins" superAdminOnly><ErrorBoundary name="AdminManageAdmins"><AdminManageAdmins /></ErrorBoundary></RequirePermission></RequireAdmin>} />
             <Route path="/admin/master-data" element={<RequireAdmin><RequirePermission permission="admins" superAdminOnly><ErrorBoundary name="AdminMasterData"><AdminMasterData /></ErrorBoundary></RequirePermission></RequireAdmin>} />
             <Route path="/admin/employees" element={<RequireAdmin><RequirePermission permission="admins" superAdminOnly><ErrorBoundary name="AdminEmployees"><AdminEmployees /></ErrorBoundary></RequirePermission></RequireAdmin>} />
             <Route path="/admin/profiles-directory" element={<RequireAdmin><RequirePermission permission="admins"><ErrorBoundary name="AdminProfilesDirectory"><AdminProfilesDirectory /></ErrorBoundary></RequirePermission></RequireAdmin>} />
-            <Route path="/admin/citizen-cyber-profiles" element={<RequireAdmin><RequirePermission permission="admins"><ErrorBoundary name="AdminProfilesDirectory"><AdminProfilesDirectory /></ErrorBoundary></RequirePermission></RequireAdmin>} />
             <Route path="/admin/deo-quotas" element={<RequireAdmin><ErrorBoundary name="AdminDeoQuotas"><AdminDeoQuotas /></ErrorBoundary></RequireAdmin>} />
             <Route path="/admin/deo-tiers" element={<RequireAdmin><ErrorBoundary name="AdminDeoQuotas"><AdminDeoQuotas /></ErrorBoundary></RequireAdmin>} />
             <Route path="/admin/deo-permissions" element={<RequireAdmin><ErrorBoundary name="AdminDeoQuotas"><AdminDeoQuotas /></ErrorBoundary></RequireAdmin>} />
@@ -199,8 +194,10 @@ const App = () => (
       <BrowserRouter future={{ v7_startTransition: true, v7_relativeSplatPath: true }}>
         <NavigationHistoryProvider>
           <div className="min-h-screen flex flex-col">
-            <DevelopmentDisclaimerModal />
-            <AppLayout />
+            <ErrorBoundary name="RootApp">
+              <DevelopmentDisclaimerModal />
+              <AppLayout />
+            </ErrorBoundary>
           </div>
         </NavigationHistoryProvider>
       </BrowserRouter>

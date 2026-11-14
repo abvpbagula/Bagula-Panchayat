@@ -70,7 +70,7 @@ export const PATERNAL_RELATIONSHIP_RULES: PaternalRelationshipRule[] = [
     defaultGender: "Male",
     ruleExplanationEn: "Biological brother of Applicant's Father (Elder). Shares common Paternal Grandfather. Fully admissible if paternal lineage is authenticated.",
     ruleExplanationBn: "আবেদনকারীর পিতার সহোদর অগ্রজ ভ্রাতা (একই পিতামহের সন্তান)। পৈতৃক বংশলতিকা প্রতিপন্ন হলে আইনত গ্রাহ্য।",
-    statutoryReference: "BCWD Standard SOP for Caste Certificate Verification",
+    statutoryReference: "BCWD Standard Guidelines for Caste Certificate Verification",
   },
   {
     code: "PAT_UNCLE_YOUNGER",
@@ -82,7 +82,7 @@ export const PATERNAL_RELATIONSHIP_RULES: PaternalRelationshipRule[] = [
     defaultGender: "Male",
     ruleExplanationEn: "Biological brother of Applicant's Father (Younger). Shares common Paternal Grandfather. Admissible through common ancestor node in Vamshabriksha.",
     ruleExplanationBn: "আবেদনকারীর পিতার সহোদর কনিষ্ঠ ভ্রাতা (একই পিতামহের সন্তান)। সাধারণ পূর্বপুরুষের বংশলতিকা দ্বারা গ্রাহ্য।",
-    statutoryReference: "BCWD Standard SOP for Caste Certificate Verification",
+    statutoryReference: "BCWD Standard Guidelines for Caste Certificate Verification",
   },
   {
     code: "BROTHER_FULL",

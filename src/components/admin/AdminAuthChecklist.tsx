@@ -24,7 +24,7 @@ import { PasswordRequirementsIndicator } from "@/components/PasswordRequirements
 
 export type TestStatus = "passed" | "failed" | "in_progress" | "pending";
 export type TestCategory =
-  | "Open Cyber Cafe Hub Access"
+  | "Open Public Portal Access"
   | "Password Policy & Enforcement"
   | "Office & DEO Provisioning"
   | "Office Role Boundaries (DEO / Admin / Super Admin)"
@@ -56,15 +56,15 @@ const INITIAL_TESTS: VerificationTest[] = [
   {
     id: "TEST-1",
     number: 1,
-    title: "Open Access Cyber Cafe & Assisted Service Hub",
-    category: "Open Cyber Cafe Hub Access",
-    objective: "Verify that Cyber Cafe Hub (/cyber-cafe) and Application Wizards (/apply/warish, /apply/dependent, /apply/linkage) load without login screens or PIN prompts.",
+    title: "Open Access Public Portal & Application Wizards",
+    category: "Open Public Portal Access",
+    objective: "Verify that Public Portal (/) and Application Wizards (/apply/warish, /apply/dependent, /apply/linkage) load without login screens or PIN prompts.",
     testSteps: [
-      "Navigate to /cyber-cafe in an unauthenticated browser session.",
-      "Verify direct access to application launch cards and Cyber Tools.",
+      "Navigate to / in an unauthenticated browser session.",
+      "Verify direct access to application launch cards and verification tools.",
       "Open /apply/warish and confirm wizard initializes cleanly.",
     ],
-    expectedResult: "Cyber Cafe Hub and /apply/* intake wizards are immediately accessible with zero login gates.",
+    expectedResult: "Public Portal and /apply/* intake wizards are immediately accessible with zero login gates.",
     status: "pending",
     notes: "",
     verifiedAt: null,
@@ -232,7 +232,7 @@ const INITIAL_TESTS: VerificationTest[] = [
     objective: "Verify active Supabase client connection and absence of legacy citizen-auth or kiosk login gates.",
     testSteps: [
       "Run automated config scan on Supabase client URL.",
-      "Verify legacy /public/* citizen routes redirect to /cyber-cafe.",
+      "Verify unknown legacy /public/* routes show NotFound.",
     ],
     expectedResult: "Zero legacy URLs or obsolete auth gates remain.",
     status: "pending",
@@ -299,7 +299,7 @@ export const AdminAuthChecklist: React.FC = () => {
 
   const categories: TestCategory[] = useMemo(
     () => [
-      "Open Cyber Cafe Hub Access",
+      "Open Public Portal Access",
       "Password Policy & Enforcement",
       "Office & DEO Provisioning",
       "Office Role Boundaries (DEO / Admin / Super Admin)",
@@ -519,7 +519,7 @@ export const AdminAuthChecklist: React.FC = () => {
               Office Authentication &amp; Role Verification Checklist
             </h1>
             <p className="text-xs text-muted-foreground mt-1 max-w-2xl">
-              Audit matrix for Bagula 2 No Gram Panchayat office-only authentication (DEO, Admin, Super Admin), 5-rule password policy, Google SSO, and open-access Cyber Cafe Hub verification.
+              Audit matrix for Bagula 2 No Gram Panchayat office-only authentication (DEO, Admin, Super Admin), 5-rule password policy, Google SSO, and open-access Public Portal verification.
             </p>
           </div>
 
@@ -658,7 +658,7 @@ export const AdminAuthChecklist: React.FC = () => {
                 Office-Only Authentication Active
               </div>
               <p>
-                Authentication applies strictly to DEO, Admin, and Super Admin staff accounts. Public Citizen and Cyber Cafe Hub workflows require no user login.
+                Authentication applies strictly to DEO, Admin, and Super Admin staff accounts. Public Portal application workflows require no user login.
               </p>
             </div>
           </CardContent>

@@ -4,10 +4,15 @@ import { supabase } from "@/integrations/supabase/client";
 import { setLastRedirectReason, writeAdminAuthDebug } from "@/lib/adminAuthDebug";
 import ForceChangePassword from "@/components/ForceChangePassword";
 import { AdminIdleTimer } from "@/components/AdminIdleTimer";
-import { TEMP_ADMIN_EMAIL } from "@/lib/tempAdminCredentials";
+import {
+  TEMP_ADMIN_EMAIL,
+  getConfiguredOfficeCredential,
+} from "@/lib/tempAdminCredentials";
+import { isSupabaseConfigured } from "@/lib/supabaseEnv";
 import {
   isSuperAdminEmail,
   isPrimarySuperAdminEmail,
+  getDesignatedOfficeRole,
   SUPER_ADMIN_EMAILS,
   PRIMARY_SUPER_ADMIN_EMAIL,
 } from "@/lib/permissions";
@@ -20,6 +25,7 @@ import {
 // Actual role assignment is done there — do not infer permissions from this list.
 export const ADMIN_EMAILS = [
   PRIMARY_SUPER_ADMIN_EMAIL,
+  "bagulaiiofficerecords@gmail.com",
   "nitish374482@gmail.com",
   "nitush6488@gmail.com",
   "nitush8343980898@gmail.com",
@@ -72,11 +78,12 @@ export default function RequireAdmin({ children }: { children: ReactNode }) {
       }
 
       const email = session.user.email?.trim().toLowerCase() ?? null;
+      const isSyntheticOfficeSession = Boolean(
+        session.access_token?.startsWith("temp_admin_token_")
+      );
 
       // =========================================================================
-      // AUTHORIZATION BYPASS FOR SUPER ADMIN 'bagula2nogp111@gmail.com'
-      // Return early with 'granted' if the user's email matches a designated Super Admin,
-      // ensuring this 'boss' account always retains access, while maintaining standard RLS/auth enforcement for all other users.
+      // AUTHORIZATION BYPASS FOR DESIGNATED SUPER ADMINS
       // =========================================================================
       if (isSuperAdminEmail(email)) {
         if (active) {
@@ -97,29 +104,54 @@ export default function RequireAdmin({ children }: { children: ReactNode }) {
           role: "super_admin",
           loginMethod: "session",
         });
-        supabase
-          .from("user_roles")
-          .upsert({ user_id: session.user.id, role: "super_admin" } as any)
-          .then(() => {});
-        supabase
-          .from("admin_profiles")
-          .upsert({
-            user_id: session.user.id,
-            email: email,
-            display_name: isPrimarySuperAdminEmail(email)
-              ? "Super Admin (Bagula 2 No Gram Panchayat)"
-              : "Secondary Super Admin (Bagula 2 No Gram Panchayat)",
-            status: "active",
-            allowed_login_method: "all",
-            service_scope: ["all"],
-            archived_at: null,
-          } as any)
-          .then(() => {});
+        if (isSupabaseConfigured && !isSyntheticOfficeSession) {
+          supabase
+            .from("user_roles")
+            .upsert({ user_id: session.user.id, role: "super_admin" } as any)
+            .then(() => {});
+          supabase
+            .from("admin_profiles")
+            .upsert({
+              user_id: session.user.id,
+              email: email,
+              display_name: isPrimarySuperAdminEmail(email)
+                ? "Super Admin (Bagula 2 No Gram Panchayat)"
+                : "Super Admin (Bagula 2 No Gram Panchayat)",
+              status: "active",
+              allowed_login_method: "all",
+              service_scope: ["all"],
+              archived_at: null,
+            } as any)
+            .then(() => {});
+        }
+        return;
+      }
+
+      // Allow configured local/preview office credentials (e.g. nitush6488@gmail.com DEO, nitush8343980898@gmail.com Admin)
+      const configuredCred = getConfiguredOfficeCredential(email);
+      if (configuredCred && (!isSupabaseConfigured || isSyntheticOfficeSession)) {
+        if (active) {
+          setUserId(session.user.id);
+          setStatus("allowed");
+          writeAdminAuthDebug({
+            sessionState: "present",
+            userId: session.user.id,
+            email,
+            roleLookupResult: "found",
+            roleLookupMessage: `Configured office session verified (${configuredCred.role}); access granted.`,
+            lastRedirectReason: null,
+          });
+        }
+        upsertAdminSessionHeartbeat({
+          email,
+          role: configuredCred.role,
+          loginMethod: "session",
+        });
         return;
       }
 
       // Check roles and admin profile
-      const [{ data: roles, error }, { data: profile, error: profileErr }] = await Promise.all([
+      const [{ data: roles, error }, { data: profile }] = await Promise.all([
         supabase
           .from("user_roles")
           .select("role")
@@ -165,9 +197,7 @@ export default function RequireAdmin({ children }: { children: ReactNode }) {
             .upsert({
               user_id: session.user.id,
               email: email,
-              display_name: isPrimarySuperAdminEmail(email)
-                ? "Super Admin (Bagula 2 No Gram Panchayat)"
-                : "Secondary Super Admin (Bagula 2 No Gram Panchayat)",
+              display_name: "Super Admin (Bagula 2 No Gram Panchayat)",
               status: "active",
               allowed_login_method: "all",
               service_scope: ["all"],
@@ -223,6 +253,9 @@ export default function RequireAdmin({ children }: { children: ReactNode }) {
         return;
       }
 
+      const resolvedRole =
+        getDesignatedOfficeRole(email) || (roles ?? [])[0]?.role || "admin";
+
       writeAdminAuthDebug({
         sessionState: "present",
         userId: session.user.id,
@@ -234,7 +267,7 @@ export default function RequireAdmin({ children }: { children: ReactNode }) {
 
       upsertAdminSessionHeartbeat({
         email,
-        role: (roles ?? [])[0]?.role || "admin",
+        role: resolvedRole,
         loginMethod: "session",
       });
 

@@ -45,7 +45,7 @@ const adminCards: CardDef[] = [
   { id: "admin-modify-mobile", title: "📱 Modify Mobile Number", desc: "Correct an applicant's mobile number on an application or issued certificate.", to: "/admin/review?kind=warish&action=modify-mobile", icon: Smartphone },
   { id: "admin-modify-email", title: "📧 Modify Email Address", desc: "Correct an applicant's email address on an application or issued certificate.", to: "/admin/review?kind=warish&action=modify-email", icon: Mail },
   { id: "admin-deo-quotas", title: "⚖️ DEO Quotas & 1/2/3 Certificate Tiers", desc: "Dedicated DEO accounts review: configure 1/2/3 allowed certificate types and daily draft limits.", to: "/admin/deo-quotas", icon: ShieldCheck },
-  { id: "admin-profiles-dir", title: "🏢 Cyber Cafe & DEO Directory", desc: "View authorized Cyber Cafe nodes, DEO certificate tiers, and daily quotas.", to: "/admin/profiles-directory", icon: Users },
+  { id: "admin-profiles-dir", title: "🏢 DEO Quotas & Directory", desc: "View DEO certificate tiers, daily intake limits, and global quota policies.", to: "/admin/profiles-directory", icon: Users },
   { id: "admin-analytics", title: "📈 Analytics & Telemetry", desc: "Interactive Recharts visual metrics: daily form submissions, user registrations, and certificate generation counts.", to: "/admin/analytics", icon: TrendingUp },
   { id: "admin-notifications", title: "🔔 Notification Centre", desc: "Returns, issues, notices and system alerts.", to: "/admin/notifications", icon: Bell },
   { id: "admin-account", title: "⚙️ Profile Settings", desc: "Mobile, email, password, language and notifications.", to: "/admin/account", icon: UserCog },
@@ -63,7 +63,7 @@ const superAdminCards: CardDef[] = [
   { id: "super-modify-contact", title: "📱 Modify Application Contact Details", desc: "Correct an applicant's mobile number or email address with audit trail.", to: "/admin/review?kind=warish&action=modify-contact", icon: Smartphone, superAdminOnly: true },
   { id: "super-analytics", title: "📈 Analytics & Telemetry", desc: "Interactive Recharts visual metrics: daily form submissions, user registrations, and certificate generation counts.", to: "/admin/analytics", icon: TrendingUp },
   { id: "super-deo-tiers-quotas", title: "⚖️ DEO Quotas & 1/2/3 Certificate Tiers", desc: "Dedicated review of all DEO accounts: set 1/2/3 certificate tiers (Warish, Dependent, Linkage), toggle birth digitization, and adjust daily draft quotas.", to: "/admin/deo-quotas", icon: ShieldCheck },
-  { id: "super-citizen-cyber-profiles", title: "🏢 Cyber Cafe & DEO Directory", desc: "View authorized Cyber Cafe nodes, DEO tiers, and adjust daily application quotas.", to: "/admin/profiles-directory", icon: Users },
+  { id: "super-deo-profiles-dir", title: "🏢 DEO Quotas & Directory", desc: "Manage DEO certificate tiers, daily quotas, and global quota policies.", to: "/admin/profiles-directory", icon: Users },
   { id: "super-employees", title: "👥 Employee Management", desc: "Employee IDs, designations, system roles and login methods.", to: "/admin/employees", icon: Users },
   { id: "super-manage-accounts", title: "🛡️ Office Accounts", desc: "Create accounts, change roles, archive employees.", to: "/admin/manage", icon: ShieldCheck },
   { id: "super-credentials", title: "🔑 Credentials", desc: "Reset passwords and control allowed sign-in methods.", to: "/admin/manage", icon: KeyRound },
@@ -232,7 +232,7 @@ export default function AdminDashboard() {
                     <span className="text-[11px] uppercase font-mono font-semibold text-primary">22 Modules Active</span>
                   </div>
                   <p className="text-xs text-muted-foreground">
-                    Full administrative control over branding, Cyber Cafe hub, services catalog, certificate templates, office auth, DEO quotas, and security hardening.
+                    Full administrative control over branding, services catalog, certificate templates, office auth, DEO quotas, and security hardening.
                   </p>
                 </div>
                 <Button asChild size="sm" className="shrink-0 gap-1.5 text-xs font-semibold">

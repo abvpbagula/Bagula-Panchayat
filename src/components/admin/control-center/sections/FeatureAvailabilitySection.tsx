@@ -46,7 +46,7 @@ export const FeatureAvailabilitySection: React.FC = () => {
             <div>
               <div className="font-bold">SYSTEM IN MAINTENANCE MODE</div>
               <p className="text-[11px] opacity-90 mt-0.5">
-                Cyber Cafe public application submission is paused during system updates. Only Super Admins can access internal queues.
+                Public application submission is paused during system updates. Only Super Admins can access internal queues.
               </p>
             </div>
           </CardContent>
@@ -60,15 +60,15 @@ export const FeatureAvailabilitySection: React.FC = () => {
             <span>Operational Feature Flags</span>
           </CardTitle>
           <CardDescription className="text-xs">
-            Toggle functional Cyber Cafe and office intake modules without service restarts.
+            Toggle functional Public Portal and office intake modules without service restarts.
           </CardDescription>
         </CardHeader>
         <CardContent className="space-y-3 pt-0 text-xs">
           <div className="flex items-center justify-between p-3 rounded-lg border bg-card">
             <div>
-              <div className="font-semibold text-foreground">Cyber Cafe Online Application Intake</div>
+              <div className="font-semibold text-foreground">Public Online Application Intake</div>
               <div className="text-[11px] text-muted-foreground">
-                Allows Cyber Cafe desks to prepare and submit Warish, Dependent, and Linkage applications.
+                Allows applicants to prepare and submit Warish, Dependent, and Linkage applications online.
               </div>
             </div>
             <div className="flex items-center gap-2">
@@ -100,7 +100,7 @@ export const FeatureAvailabilitySection: React.FC = () => {
             <div>
               <div className="font-semibold text-foreground">Legacy Birth Record Digitization</div>
               <div className="text-[11px] text-muted-foreground">
-                Allows DEOs and Cyber Cafe intake forms to record historical birth entries into the searchable index.
+                Allows DEOs and public intake forms to record historical birth entries into the searchable index.
               </div>
             </div>
             <div className="flex items-center gap-2">

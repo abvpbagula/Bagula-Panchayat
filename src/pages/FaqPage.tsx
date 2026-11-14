@@ -30,21 +30,21 @@ export default function FaqPage() {
   return (
     <div className="min-h-screen bg-slate-50 pb-20">
       <Helmet>
-        <title>Cyber Cafe &amp; Assisted Service FAQ — Bagula 2 No Gram Panchayat</title>
+        <title>Public Service FAQ — Bagula 2 No Gram Panchayat</title>
         <meta
           name="description"
-          content="Frequently asked questions and documentation procedures for Cyber Cafe operators and Bagula 2 No Gram Panchayat residents."
+          content="Frequently asked questions and documentation procedures for Bagula 2 No Gram Panchayat residents."
         />
       </Helmet>
 
       <main className="mx-auto max-w-6xl space-y-6 px-4 py-8 sm:px-6">
-        <GoBackButton fallbackUrl="/cyber-cafe" label="Back to Cyber Cafe Hub" className="-ml-2" />
+        <GoBackButton fallbackUrl="/" label="Back to Home" className="-ml-2" />
 
         <PageSectionHeader
-          kicker="Bagula 2 No Gram Panchayat · Documentation & SOP"
-          title="Frequently Asked Questions &amp; Assisted Service Guides"
-          bengaliTitle="সাইবার ক্যাফে এবং নাগরিক পরিষেবা সংক্রান্ত সাধারণ জিজ্ঞাস্য"
-          description="Step-by-step document requirements, statutory timelines, and Cyber Cafe operator instructions for Warish, Dependent, Linkage, and Birth/Death applications."
+          kicker="Bagula 2 No Gram Panchayat · Public Help & FAQ"
+          title="Frequently Asked Questions"
+          bengaliTitle="নাগরিক পরিষেবা সংক্রান্ত সাধারণ জিজ্ঞাস্য"
+          description="Step-by-step document requirements and statutory timelines for Warish, Dependent, Linkage, and Birth/Death applications."
         />
 
         <CitizenFaqSection onSelectServiceGuide={handleSelectServiceGuide} />

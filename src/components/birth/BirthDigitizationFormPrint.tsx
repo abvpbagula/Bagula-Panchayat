@@ -195,7 +195,7 @@ export default function BirthDigitizationFormPrint({
                   রেজিস্ট্রার, বগুলা ২ নং গ্রাম পঞ্চায়েত · নদীয়া
                 </Badge>
                 <Badge variant="secondary" className="text-xs">
-                  RBD Act, 1969 & WB SOP Case-I
+                  RBD Act, 1969 & WB Case-I Guidelines
                 </Badge>
               </div>
               <h2 className="text-lg sm:text-xl font-bold text-foreground mt-1.5 flex items-center gap-2">

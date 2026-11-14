@@ -198,7 +198,7 @@ export function BirthDigitalizationRuleManager({
               </div>
               <p className="text-xs text-muted-foreground">
                 {form.isActive
-                  ? "Citizens and cyber cafes can see the schedule and submit pre-verification files."
+                  ? "Citizens and applicants can see the schedule and submit pre-verification files."
                   : "Application intake is paused. Public notice informs citizens of the administrative hold."}
               </p>
             </div>

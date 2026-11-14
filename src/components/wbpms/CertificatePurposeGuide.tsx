@@ -206,7 +206,7 @@ export function CertificatePurposeGuide({
           {/* General Guidance Caution */}
           <div className="bg-muted/30 border rounded-xl p-3.5 text-xs text-muted-foreground space-y-1">
             <h5 className="font-bold text-foreground flex items-center gap-1.5 text-xs">
-              <HelpCircle size={14} className="text-primary" /> Important Note for Cyber Cafes & Applicants:
+              <HelpCircle size={14} className="text-primary" /> Important Note for Applicants:
             </h5>
             <p className="text-[11px] leading-relaxed">
               When applying on <strong className="text-foreground">wbpms.in</strong>, do not leave the purpose field blank or write vague phrases like "General Purpose" or "Official Work". Entering a specific, recognized purpose from the list above ensures rapid scrutiny and immediate approval by the Bagula 2 No Gram Panchayat Sub-Registrar.

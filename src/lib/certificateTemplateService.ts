@@ -14,6 +14,7 @@ import {
 } from "@/types/certificateTemplate";
 import { saveBusinessRule, loadBusinessRule } from "@/lib/businessRulesService";
 import { logActivity } from "@/lib/activityLog";
+import { isSuperAdminEmail } from "@/lib/permissions";
 
 const ALLOWED_MIME_TYPES = [
   "image/png",
@@ -238,7 +239,7 @@ export async function activateTemplate(
   actorEmail: string | null,
   actorRole: string | null
 ): Promise<{ success: boolean; activeTemplate?: CertificateTemplate; error?: string }> {
-  if (actorRole !== "super_admin" && actorEmail !== "bagula2nogp111@gmail.com" && actorEmail !== "nitish374482@gmail.com") {
+  if (actorRole !== "super_admin" && !isSuperAdminEmail(actorEmail)) {
     return { success: false, error: "Access Denied: Only Super Admin has authority to activate certificate templates." };
   }
 

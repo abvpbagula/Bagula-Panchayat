@@ -14,7 +14,7 @@ export default function BirthDigitizationFormPage() {
         <title>Legacy Birth Certificate Digitization Pre-Verification Portal — Bagula 2 No Gram Panchayat</title>
         <meta
           name="description"
-          content="Decentralized Cyber Cafe Pre-Verification & Digitization Tool for Bagula 2 No Gram Panchayat (Nadia). Case-I SOP compliance, DPDP 2025 zero-retention, and phonetic register search."
+          content="Pre-Verification & Digitization Tool for Bagula 2 No Gram Panchayat (Nadia). Case-I guidelines compliance, DPDP 2025 zero-retention, and phonetic register search."
         />
       </Helmet>
 

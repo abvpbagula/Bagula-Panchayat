@@ -189,7 +189,7 @@ export default function AdminAccountSettings() {
         sessionStorage.getItem("bagula2_temp_must_change_password") === "true";
 
       if (!isSupabaseConfigured || isTempSession) {
-        markTempPasswordConsumed(newPassword);
+        markTempPasswordConsumed(newPassword, currentEmail);
         setNewPassword("");
         setConfirmPassword("");
         toast.success(

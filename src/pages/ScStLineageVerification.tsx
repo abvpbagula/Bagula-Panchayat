@@ -63,9 +63,9 @@ export default function ScStLineageVerification() {
   const caseIdParam = searchParams.get("case");
   const tabParam = searchParams.get("tab") || "builder";
 
-  // Tab State: "builder" | "review" | "print" | "sop"
-  const [activeTab, setActiveTab] = useState<"builder" | "review" | "print" | "sop">(
-    tabParam === "review" || tabParam === "print" || tabParam === "sop" ? tabParam : "builder"
+  // Tab State: "builder" | "review" | "print"
+  const [activeTab, setActiveTab] = useState<"builder" | "review" | "print">(
+    tabParam === "review" || tabParam === "print" ? tabParam : "builder"
   );
 
   // Loaded Case Data
@@ -95,7 +95,7 @@ export default function ScStLineageVerification() {
   }, []);
 
   // Update URL tab
-  const handleTabChange = (tab: "builder" | "review" | "print" | "sop") => {
+  const handleTabChange = (tab: "builder" | "review" | "print") => {
     setActiveTab(tab);
     setSearchParams({ tab, case: activeCase.caseId });
   };
@@ -228,6 +228,11 @@ export default function ScStLineageVerification() {
 
   // Create Fresh New Case
   const handleCreateNewCase = () => {
+    const ts = Date.now();
+    const ancId = `node_anc_${ts}`;
+    const fatId = `node_fat_${ts}`;
+    const holId = `node_hol_${ts}`;
+    const appId = `node_app_${ts}`;
     const newCaseId = `B2GP-SCS-2026-${Math.floor(10000 + Math.random() * 90000)}`;
     const newTrackingId = `TRK-LIN-${Math.floor(10000 + Math.random() * 90000)}`;
 
@@ -266,7 +271,7 @@ export default function ScStLineageVerification() {
       },
       treeNodes: [
         {
-          id: `node_anc_${Date.now()}`,
+          id: ancId,
           parentId: null,
           fullName: "LATE COMMON ANCESTOR",
           relationshipToApplicant: "Paternal Grandfather (পিতামহ)",
@@ -280,8 +285,8 @@ export default function ScStLineageVerification() {
           supportingDocRef: "Land Khatian / 1971 Voter List",
         },
         {
-          id: `node_fat_${Date.now()}`,
-          parentId: `node_anc_${Date.now()}`,
+          id: fatId,
+          parentId: ancId,
           fullName: "FATHER NAME",
           relationshipToApplicant: "Father (পিতা)",
           relationshipCode: "FATHER",
@@ -294,8 +299,8 @@ export default function ScStLineageVerification() {
           supportingDocRef: "Aadhaar Card",
         },
         {
-          id: `node_hol_${Date.now()}`,
-          parentId: `node_anc_${Date.now()}`,
+          id: holId,
+          parentId: ancId,
           fullName: "EXISTING CERTIFICATE HOLDER",
           relationshipToApplicant: "Paternal Uncle (কাকামশাই)",
           relationshipCode: "PAT_UNCLE_YOUNGER",
@@ -314,8 +319,8 @@ export default function ScStLineageVerification() {
           verificationStatus: "Verified by Records",
         },
         {
-          id: `node_app_${Date.now()}`,
-          parentId: `node_fat_${Date.now()}`,
+          id: appId,
+          parentId: fatId,
           fullName: "NEW APPLICANT",
           relationshipToApplicant: "Self / Applicant (আবেদনকারী)",
           relationshipCode: "SELF",
@@ -329,9 +334,9 @@ export default function ScStLineageVerification() {
           supportingDocRef: "Madhyamik Admit Card",
         },
       ],
-      rootAncestorNodeId: `node_anc_${Date.now()}`,
-      applicantNodeId: `node_app_${Date.now()}`,
-      certificateHolderNodeId: `node_hol_${Date.now()}`,
+      rootAncestorNodeId: ancId,
+      applicantNodeId: appId,
+      certificateHolderNodeId: holId,
       supportingDocuments: [
         { docType: "SC_CERTIFICATE", docName: "Existing SC Certificate Copy", attached: true },
         { docType: "LAND_RECORD", docName: "CS/RS Land Khatian", attached: true },
@@ -398,7 +403,7 @@ export default function ScStLineageVerification() {
         <title>SC/ST Paternal Lineage Verification | Bagula II Gram Panchayat</title>
         <meta
           name="description"
-          title="SC/ST Paternal Lineage Verification and Gram Sansad Vamshabriksha Declaration Desk, Bagula II Gram Panchayat, Nadia."
+          content="SC/ST Paternal Lineage Verification and Gram Sansad Vamshabriksha Declaration Desk, Bagula II Gram Panchayat, Nadia."
         />
       </Helmet>
 
@@ -449,6 +454,24 @@ export default function ScStLineageVerification() {
               >
                 <Plus size={13} />
                 <span>New Case File</span>
+              </Button>
+
+              <Button
+                asChild
+                size="sm"
+                className="h-8 text-xs bg-amber-500 hover:bg-amber-400 text-slate-950 font-semibold gap-1.5 whitespace-nowrap shrink-0"
+              >
+                <Link
+                  to={`/family-tree-generator?from=sc-st-lineage&applicant=${encodeURIComponent(
+                    applicantFullName
+                  )}&head=${encodeURIComponent(
+                    activeCase.treeNodes.find((n) => n.parentId === null)?.fullName ||
+                      applicantFatherName
+                  )}&sansad=${encodeURIComponent(`Ward ${applicantWardNo}`)}`}
+                >
+                  <GitBranch size={13} />
+                  <span>Family Tree Generator (বংশতালিকা)</span>
+                </Link>
               </Button>
             </div>
           </div>
@@ -501,18 +524,6 @@ export default function ScStLineageVerification() {
             >
               <Printer size={14} />
               <span>3. Case File &amp; Print (মুদ্রণ ও OSCAR প্রস্তুতি)</span>
-            </button>
-            <button
-              type="button"
-              onClick={() => handleTabChange("sop")}
-              className={`px-3.5 py-2 rounded-xl text-xs font-bold transition-all flex items-center gap-2 shrink-0 ${
-                activeTab === "sop"
-                  ? "bg-amber-500 text-slate-950 shadow-sm"
-                  : "bg-slate-800 text-slate-300 hover:text-white"
-              }`}
-            >
-              <FileCheck2 size={14} />
-              <span>4. SOP &amp; Legal Framework (আইন ও নির্দেশিকা)</span>
             </button>
           </div>
         </div>
@@ -1040,95 +1051,6 @@ export default function ScStLineageVerification() {
 
             {/* PRINT COMPONENT */}
             <GramSansadDeclarationPrint caseData={activeCase} />
-          </div>
-        )}
-
-        {/* TAB 4: STATUTORY LEGAL FRAMEWORK, SOP & FAQ */}
-        {activeTab === "sop" && (
-          <div className="space-y-6 animate-in fade-in-50 duration-200">
-            <div className="grid md:grid-cols-2 gap-5">
-              <Card className="p-5 space-y-3 rounded-2xl border-border/80">
-                <div className="flex items-center gap-2 border-b border-border/50 pb-2">
-                  <Scale size={18} className="text-primary" />
-                  <h4 className="font-bold text-sm text-foreground">
-                    West Bengal SC/ST (Identification) Act, 1994 (Act XXXVIII)
-                  </h4>
-                </div>
-                <ul className="text-xs text-muted-foreground space-y-2 list-disc pl-4 leading-relaxed">
-                  <li>
-                    <strong>Section 5 (Determination of Caste):</strong> Caste status is recognized strictly through biological paternal lineage. The child acquires the social status and caste community of the biological father.
-                  </li>
-                  <li>
-                    <strong>Rule 3 of 1995 Rules:</strong> When an applicant claims caste based on an existing certificate holder, documentary genealogical evidence establishing agnatic lineage must be produced.
-                  </li>
-                  <li>
-                    <strong>Role of Gram Sansad Vamshabriksha:</strong> The declaration of the elected Gram Sansad Member serves as primary territorial proof and local verification of kinship, submitted before the Sub-Divisional Officer.
-                  </li>
-                </ul>
-              </Card>
-
-              <Card className="p-5 space-y-3 rounded-2xl border-border/80">
-                <div className="flex items-center gap-2 border-b border-border/50 pb-2">
-                  <ShieldCheck size={18} className="text-emerald-600" />
-                  <h4 className="font-bold text-sm text-foreground">
-                    Why Maternal &amp; In-Law Relatives Are Inadmissible
-                  </h4>
-                </div>
-                <ul className="text-xs text-muted-foreground space-y-2 list-disc pl-4 leading-relaxed">
-                  <li>
-                    <strong>Mother&apos;s Lineage Restriction:</strong> Mother&apos;s brother (মামা) or maternal grandfather (দাদু) belongs to a distinct uterine family. Under state guidelines, maternal certificates cannot establish paternal caste inheritance.
-                  </li>
-                  <li>
-                    <strong>Affinal / In-Law Relationships:</strong> The Supreme Court in <em>Valsamma Paul vs Cochin University (AIR 1996 SC 1011)</em> held that caste cannot be acquired by marriage. A woman marrying a scheduled caste man does not acquire SC status.
-                  </li>
-                  <li>
-                    <strong>Configurable Master Data Engine:</strong> The system maintains configurable paternal rules so if state regulations evolve, rules update without system refactoring.
-                  </li>
-                </ul>
-              </Card>
-            </div>
-
-            {/* FREQUENTLY ASKED QUESTIONS (FAQ) */}
-            <Card className="p-5 rounded-2xl border-border/80 space-y-4">
-              <h4 className="font-bold text-sm text-foreground flex items-center gap-2">
-                <HelpCircle size={16} className="text-primary" />
-                <span>Frequently Asked Questions (প্রশ্নোত্তর)</span>
-              </h4>
-
-              <div className="space-y-3 text-xs">
-                {[
-                  {
-                    q: "Is this document the final Caste Certificate issued to the citizen?",
-                    bq: "এই নথিটি কি নাগরিকের চূড়ান্ত কাস্ট সার্টিফিকেট?",
-                    a: "No. This is an authenticated Gram Sansad Member Paternal Vamshabriksha & Relationship Declaration. It provides authenticated genealogical evidence of paternal kinship to support the citizen's online application on castecertificatewb.gov.in. The final statutory certificate is issued solely by the Sub-Divisional Officer (SDO) / BDO.",
-                  },
-                  {
-                    q: "Can the family tree include multiple generations beyond two?",
-                    bq: "বংশতালিকায় কি দুই বা ততোধিক পূর্বপুরুষের প্রজন্ম অন্তর্ভুক্ত করা যায়?",
-                    a: "Yes. The recursive tree architecture supports arbitrary ancestor generations (Great-Great-Grandfather -> Great-Grandfather -> Grandfather -> Father -> Applicant) as well as collateral branches (uncles, brothers, cousins). Each relationship is preserved as a structured relational record in the database.",
-                  },
-                  {
-                    q: "What happens if a citizen selects a maternal relative?",
-                    bq: "নাগরিক যদি মাতৃকূলের আত্মীয় নির্বাচন করেন তবে সিস্টেম কী করবে?",
-                    a: "The system does not delete the citizen's data. Instead, it displays an active informative alert: 'Not eligible for paternal-linkage pathway' explaining statutory Section 5 restrictions and advises entering a paternal blood relative.",
-                  },
-                  {
-                    q: "How does the OSCAR single-file upload preparation work?",
-                    bq: "OSCAR পোর্টালে আপলোডের জন্য একক পিডিএফ প্রস্তুতি কীভাবে কাজ করে?",
-                    a: "Under the Office Upload Preparation Rule, the cyber cafe or applicant prints/downloads this signed declaration sheet, combines it with the clear scan of the relative's existing SC/ST certificate into a single merged PDF (recommended < 2 MB), and uploads it on the state portal.",
-                  },
-                ].map((item, idx) => (
-                  <div key={idx} className="p-3.5 rounded-xl border border-border/60 bg-muted/20 space-y-1">
-                    <p className="font-bold text-foreground flex items-center gap-1.5">
-                      <HelpCircle size={13} className="text-primary shrink-0" />
-                      <span>{item.q}</span>
-                    </p>
-                    <p className="font-bengali text-[11px] font-medium text-primary pl-5">{item.bq}</p>
-                    <p className="text-muted-foreground leading-relaxed pl-5 pt-0.5 text-[11px]">{item.a}</p>
-                  </div>
-                ))}
-              </div>
-            </Card>
           </div>
         )}
       </div>

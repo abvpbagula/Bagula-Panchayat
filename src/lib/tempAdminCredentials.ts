@@ -5,6 +5,7 @@
  */
 
 import { getSupabaseAuthStorageKey } from "@/lib/supabaseEnv";
+import type { OfficeRole } from "@/lib/permissions";
 
 export const TEMP_ADMIN_EMAIL = "bagula2nogp111@gmail.com";
 export const SUPER_ADMIN_CRED_EMAILS = ["bagula2nogp111@gmail.com", "nitish374482@gmail.com"];
@@ -14,6 +15,55 @@ export const TEMP_PASSWORD_DURATION_MS = 30 * 60 * 1000; // 30 minutes
 
 const STORAGE_KEY = `bagula2_temp_cred_${TEMP_ADMIN_EMAIL}`;
 const PERM_PW_STORAGE_KEY = `bagula2_perm_cred_${TEMP_ADMIN_EMAIL}`;
+
+export interface ConfiguredOfficeCredential {
+  email: string;
+  role: OfficeRole;
+  password: string;
+  userId: string;
+  displayName: string;
+  fullName: string;
+  designation: string;
+}
+
+export const ACTIVE_OFFICE_CREDENTIALS: Record<string, ConfiguredOfficeCredential> = {
+  "nitush6488@gmail.com": {
+    email: "nitush6488@gmail.com",
+    role: "deo",
+    password: TEMP_ADMIN_PASSWORD,
+    userId: "0b49a1d5-50b3-4cce-ba8d-9a0d5a0fbb18",
+    displayName: "DEO (Bagula 2 No Gram Panchayat)",
+    fullName: "GP Data Entry Operator",
+    designation: "deo",
+  },
+  "nitush8343980898@gmail.com": {
+    email: "nitush8343980898@gmail.com",
+    role: "admin",
+    password: TEMP_ADMIN_PASSWORD,
+    userId: "0b49a1d5-50b3-4cce-ba8d-9a0d5a0fbb19",
+    displayName: "Admin (Bagula 2 No Gram Panchayat)",
+    fullName: "GP Reviewing Authority",
+    designation: "secretary",
+  },
+  "bagulaiiofficerecords@gmail.com": {
+    email: "bagulaiiofficerecords@gmail.com",
+    role: "super_admin",
+    password: TEMP_ADMIN_PASSWORD,
+    userId: "0b49a1d5-50b3-4cce-ba8d-9a0d5a0fbb20",
+    displayName: "Super Admin (Bagula 2 No Gram Panchayat)",
+    fullName: "GP Super Admin",
+    designation: "pradhan",
+  },
+};
+
+export function getConfiguredOfficeCredential(email: string | null | undefined): ConfiguredOfficeCredential | null {
+  if (!email) return null;
+  return ACTIVE_OFFICE_CREDENTIALS[email.trim().toLowerCase()] ?? null;
+}
+
+export function isConfiguredOfficeCredentialEmail(email: string | null | undefined): boolean {
+  return getConfiguredOfficeCredential(email) !== null;
+}
 
 export interface TempCredRecord {
   email: string;
@@ -87,6 +137,100 @@ export function isTempPasswordExpired(record: TempCredRecord = getTempCredRecord
 export function getRemainingTempMinutes(record: TempCredRecord = getTempCredRecord()): number {
   const remainingMs = record.issuedAt + record.durationMs - Date.now();
   return Math.max(0, Math.ceil(remainingMs / (60 * 1000)));
+}
+
+/**
+ * Validates a sign-in attempt for configured active office credentials
+ * (nitush6488@gmail.com -> deo, nitush8343980898@gmail.com -> admin, bagulaiiofficerecords@gmail.com -> super_admin).
+ */
+export function verifyConfiguredOfficeLogin(
+  email: string,
+  candidatePassword: string
+): {
+  matchedAccount: boolean;
+  success: boolean;
+  role?: OfficeRole;
+  credential?: ConfiguredOfficeCredential;
+  error?: string;
+} {
+  const entry = getConfiguredOfficeCredential(email);
+  if (!entry) {
+    return { matchedAccount: false, success: false };
+  }
+
+  try {
+    const permanentPw = localStorage.getItem(`bagula2_perm_cred_${entry.email}`);
+    if (permanentPw) {
+      if (candidatePassword === permanentPw) {
+        return { matchedAccount: true, success: true, role: entry.role, credential: entry };
+      }
+      return { matchedAccount: true, success: false, error: "Incorrect password." };
+    }
+  } catch {
+    // ignore storage errors
+  }
+
+  if (candidatePassword === entry.password) {
+    return { matchedAccount: true, success: true, role: entry.role, credential: entry };
+  }
+
+  return { matchedAccount: true, success: false, error: "Incorrect password." };
+}
+
+/**
+ * Creates and writes a synthetic authenticated session into Supabase local storage
+ * for a configured active office account with its assigned role.
+ */
+export function establishConfiguredOfficeSession(targetEmail: string): any {
+  const entry = getConfiguredOfficeCredential(targetEmail);
+  if (!entry) return null;
+
+  const nowIso = new Date().toISOString();
+  const nowSec = Math.floor(Date.now() / 1000);
+  const ttlSec = 12 * 60 * 60; // 12 hours
+
+  const session = {
+    access_token: `temp_admin_token_${Date.now()}`,
+    token_type: "bearer",
+    expires_in: ttlSec,
+    expires_at: nowSec + ttlSec,
+    refresh_token: `temp_refresh_${Date.now()}`,
+    user: {
+      id: entry.userId,
+      aud: "authenticated",
+      role: "authenticated",
+      email: entry.email,
+      email_confirmed_at: nowIso,
+      confirmed_at: nowIso,
+      last_sign_in_at: nowIso,
+      app_metadata: {
+        provider: "email",
+        providers: ["email"],
+        role: entry.role,
+      },
+      user_metadata: {
+        office: true,
+        display_name: entry.displayName,
+        full_name: entry.fullName,
+        designation: entry.designation,
+        role: entry.role,
+        service_scope: ["all"],
+        is_super_admin: entry.role === "super_admin",
+      },
+      created_at: "2026-05-01T00:00:00.000Z",
+      updated_at: nowIso,
+    },
+  };
+
+  try {
+    localStorage.setItem(getSupabaseAuthStorageKey(), JSON.stringify(session));
+    sessionStorage.removeItem("bagula2_temp_must_change_password");
+    sessionStorage.removeItem("bagula2_temp_issued_at");
+  } catch (err) {
+    console.error("Failed to store office session", err);
+  }
+
+  return session;
 }
 
 /**
@@ -204,7 +348,18 @@ export function establishTempAdminSession(targetEmail: string = TEMP_ADMIN_EMAIL
  * Consumes the temporary password when the user successfully sets their permanent password.
  * The temporary password STOPPED working immediately!
  */
-export function markTempPasswordConsumed(newPermanentPassword: string): void {
+export function markTempPasswordConsumed(newPermanentPassword: string, targetEmail?: string | null): void {
+  const normTarget = targetEmail?.trim().toLowerCase();
+  if (normTarget && isConfiguredOfficeCredentialEmail(normTarget)) {
+    try {
+      localStorage.setItem(`bagula2_perm_cred_${normTarget}`, newPermanentPassword);
+      sessionStorage.removeItem("bagula2_temp_must_change_password");
+    } catch {
+      // ignore
+    }
+    return;
+  }
+
   const record = getTempCredRecord();
   record.consumed = true;
   record.permanentPasswordSet = true;
@@ -212,6 +367,9 @@ export function markTempPasswordConsumed(newPermanentPassword: string): void {
 
   try {
     localStorage.setItem(PERM_PW_STORAGE_KEY, newPermanentPassword);
+    if (normTarget) {
+      localStorage.setItem(`bagula2_perm_cred_${normTarget}`, newPermanentPassword);
+    }
     sessionStorage.removeItem("bagula2_temp_must_change_password");
   } catch {
     // ignore

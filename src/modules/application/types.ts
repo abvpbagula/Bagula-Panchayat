@@ -25,6 +25,7 @@ export const KIND_GENERATOR_ROUTE: Record<ApplicationKind, string> = {
 export interface ApplicantInfo {
   prefix: string;
   name: string;
+  careOf?: string;
   relationType: string;
   guardianName: string;
   village: string;
@@ -44,6 +45,7 @@ export interface ApplicantInfo {
 export const EMPTY_APPLICANT: ApplicantInfo = {
   prefix: "Shri",
   name: "",
+  careOf: "",
   relationType: "S/O",
   guardianName: "",
   village: "",
@@ -100,6 +102,8 @@ export interface WarishDetails {
   ageAtDeath?: string;
   applicantRelation: string;
   applicant_relation_id?: string;
+  deceasedChildRelation?: "" | "son" | "daughter";
+  deceasedCareOf?: string;
   heirs: WarishHeir[];
   successors?: WarishSuccessorRecord[];
 }
@@ -234,7 +238,9 @@ export const EMPTY_DRAFT: ApplicationDraft = {
     placeOfDeath: "",
     causeOfDeath: "",
     ageAtDeath: "",
-    applicantRelation: "Son",
+    applicantRelation: "",
+    deceasedChildRelation: "",
+    deceasedCareOf: "",
     heirs: [{ name: "", relation: "Son", age: "", hasLegalSuccessors: "" }],
     successors: [],
   },

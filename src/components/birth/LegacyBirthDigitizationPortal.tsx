@@ -43,37 +43,6 @@ export const GP_ADMIN_CONTEXT = {
   jmtpPortalUrl: "https://janmamrityutathya.wb.gov.in",
 };
 
-// Registered Cyber Cafe Nodes in Bagula 2 No Gram Panchayat
-export const CYBER_CAFE_NODES = [
-  {
-    id: "trust_media",
-    name: "Trust Media CSC",
-    cscId: "373345540017",
-    operatorName: "Samrat Biswas",
-    location: "Muraghacha Colony, Bagula, Nadia",
-    phone: "+91 97332 41100",
-    verified: true,
-  },
-  {
-    id: "nayan_mondal",
-    name: "Nayan Mondal CSC",
-    cscId: "373345540248",
-    operatorName: "Nayan Mondal",
-    location: "Bagula 2 No Gram Panchayat Area, Nadia",
-    phone: "+91 94741 85200",
-    verified: true,
-  },
-  {
-    id: "joy_guru",
-    name: "Joy Guru Cyber Cafe CSC",
-    cscId: "373345540912",
-    operatorName: "Bappa Sarkar",
-    location: "Badkulla-Hanskhali Road, Bagula",
-    phone: "+91 98320 63400",
-    verified: true,
-  },
-];
-
 // Historical Register Samples for pg_trgm Fuzzy Match Simulator
 const HISTORICAL_VOLUME_REGISTERS = [
   {
@@ -175,16 +144,8 @@ function calculateTrigramSimilarity(str1: string, str2: string): number {
 export default function LegacyBirthDigitizationPortal() {
   // Active Main View
   const [activeTab, setActiveTab] = useState<
-    "form" | "summary" | "operator" | "sandbox" | "sop" | "raw_a4"
+    "form" | "summary" | "sandbox" | "raw_a4"
   >("form");
-
-  // Operator Authentication State
-  const [selectedNodeId, setSelectedNodeId] = useState<string>("trust_media");
-  const [operatorMobile, setOperatorMobile] = useState<string>("9733241100");
-  const [otpValue, setOtpValue] = useState<string>("");
-  const [isOtpSent, setIsOtpSent] = useState<boolean>(true);
-  const [isOperatorAuthenticated, setIsOperatorAuthenticated] =
-    useState<boolean>(true);
 
   // DPDP Consent State
   const [hasConsent, setHasConsent] = useState<boolean>(true);
@@ -246,13 +207,6 @@ export default function LegacyBirthDigitizationPortal() {
 
   // Fuzzy search sandbox state
   const [searchQuery, setSearchQuery] = useState<string>("Ganesh Pramanik");
-
-  const activeNode = useMemo(() => {
-    return (
-      CYBER_CAFE_NODES.find((n) => n.id === selectedNodeId) ||
-      CYBER_CAFE_NODES[0]
-    );
-  }, [selectedNodeId]);
 
   // Handle Uppercase Transformation for Names
   const handleNameChange = (field: "childName" | "motherName" | "fatherName", val: string) => {
@@ -342,20 +296,6 @@ export default function LegacyBirthDigitizationPortal() {
     }
   };
 
-  // Operator Login Simulator
-  const handleLoginSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    if (otpValue === "928374" || otpValue.length === 6) {
-      setIsOperatorAuthenticated(true);
-      toast.success(
-        `Operator authenticated at node: ${activeNode.name} (${activeNode.cscId})`
-      );
-      setActiveTab("form");
-    } else {
-      toast.error("Invalid OTP. Enter test OTP: 928374");
-    }
-  };
-
   // Form Submission -> Summary
   const handleGenerateSummary = (e: React.FormEvent) => {
     e.preventDefault();
@@ -423,7 +363,7 @@ export default function LegacyBirthDigitizationPortal() {
                 Govt. of West Bengal
               </span>
               <span className="bg-white/10 text-amber-300 text-[11px] font-mono px-2 py-0.5 rounded-md border border-amber-400/30">
-                SBHI SOP Case-I Digitization
+                SBHI Case-I Digitization
               </span>
               <span className="text-[11px] text-white/70">
                 May 2026 Re-Verification Drive
@@ -443,19 +383,8 @@ export default function LegacyBirthDigitizationPortal() {
             </p>
           </div>
 
-          {/* Active Operator Node Badge & Quick Actions */}
+          {/* Active Zero-Retention Action */}
           <div className="flex flex-col sm:flex-row sm:items-center gap-2.5">
-            <div className="bg-white/10 backdrop-blur-xs border border-white/20 rounded-xl p-2.5 text-xs">
-              <div className="flex items-center gap-1.5 text-amber-300 font-semibold">
-                <Shield size={14} />
-                <span>Authorized Cyber Node</span>
-              </div>
-              <div className="text-white font-bold">{activeNode.name}</div>
-              <div className="text-[10px] text-white/80 font-mono">
-                CSC ID: {activeNode.cscId} ({activeNode.operatorName})
-              </div>
-            </div>
-
             <Button
               variant="destructive"
               size="sm"
@@ -483,10 +412,10 @@ export default function LegacyBirthDigitizationPortal() {
             <Badge className="bg-emerald-600 text-white text-[10px] px-2 py-0">Enforced</Badge>
           </div>
           <p className="text-emerald-800 text-[11px] leading-relaxed">
-            <strong>English:</strong> All citizen details and identity proof scans are held strictly in temporary browser memory during this pre-verification session. No data or scans are permanently retained on this cyber cafe terminal. Clicking "Purge & Logout" destroys all cached state immediately.
+            <strong>English:</strong> All citizen details and identity proof scans are held strictly in temporary browser memory during this pre-verification session. No data or scans are permanently retained on this browser terminal. Clicking "Purge & Logout" destroys all cached state immediately.
           </p>
           <p className="text-emerald-900 text-[11px] leading-relaxed font-bengali">
-            <strong>বাংলা:</strong> ডিজিটাল ব্যক্তিগত ডেটা সুরক্ষা বিধি (DPDP 2025) অনুযায়ী এই পোর্টালে কাজ করার সময় কোনো নাগরিকের আধার বা নথি সাইবার ক্যাফের কম্পিউটারে সংরক্ষণ করা হয় না। কাজ শেষে "Purge & Logout" করলে সমস্ত তথ্য মুছে যাবে।
+            <strong>বাংলা:</strong> ডিজিটাল ব্যক্তিগত ডেটা সুরক্ষা বিধি (DPDP 2025) অনুযায়ী এই পোর্টালে কাজ করার সময় কোনো নাগরিকের আধার বা নথি ব্রাউজারে স্থায়ীভাবে সংরক্ষণ করা হয় না। কাজ শেষে "Purge & Logout" করলে সমস্ত তথ্য মুছে যাবে।
           </p>
         </div>
       </div>
@@ -537,30 +466,6 @@ export default function LegacyBirthDigitizationPortal() {
         </Button>
 
         <Button
-          variant={activeTab === "operator" ? "default" : "outline"}
-          size="sm"
-          onClick={() => setActiveTab("operator")}
-          className={`rounded-xl text-xs gap-1.5 font-semibold ${
-            activeTab === "operator" ? "bg-[#0B2545] text-white" : ""
-          }`}
-        >
-          <UserCheck size={14} />
-          <span>Cyber Cafe Node Authentication</span>
-        </Button>
-
-        <Button
-          variant={activeTab === "sop" ? "default" : "outline"}
-          size="sm"
-          onClick={() => setActiveTab("sop")}
-          className={`rounded-xl text-xs gap-1.5 font-semibold ${
-            activeTab === "sop" ? "bg-[#0B2545] text-white" : ""
-          }`}
-        >
-          <Info size={14} />
-          <span>SOP Guidelines & Statutory Checklist</span>
-        </Button>
-
-        <Button
           variant={activeTab === "raw_a4" ? "default" : "outline"}
           size="sm"
           onClick={() => setActiveTab("raw_a4")}
@@ -578,10 +483,10 @@ export default function LegacyBirthDigitizationPortal() {
       {/* ========================================================================= */}
       {activeTab === "form" && (
         <div className="space-y-6">
-          {/* Dual Path Selector (SBHI SOP Case-I) */}
+          {/* Dual Path Selector (SBHI Case-I) */}
           <div className="bg-muted/40 p-4 rounded-2xl border border-border/60">
             <Label className="text-xs font-bold text-foreground uppercase tracking-wider block mb-2">
-              Select Case-I Digitization Scenario (West Bengal SBHI SOP):
+              Select Case-I Digitization Scenario (West Bengal SBHI Guidelines):
             </Label>
             <div className="grid sm:grid-cols-2 gap-3">
               <div
@@ -1146,7 +1051,7 @@ export default function LegacyBirthDigitizationPortal() {
                 <span>Pre-Verification Sheet Generated (Form A Standard)</span>
               </h3>
               <p className="text-xs text-muted-foreground">
-                Reference ID: <code className="font-mono font-bold text-primary">{verificationRef}</code> · Issued at Cyber Cafe Node: <strong>{activeNode.name}</strong>
+                Reference ID: <code className="font-mono font-bold text-primary">{verificationRef}</code> · Bagula 2 No Gram Panchayat Pre-Verification
               </p>
             </div>
 
@@ -1336,24 +1241,17 @@ export default function LegacyBirthDigitizationPortal() {
                   Two (2) colored passport size photographs of the applicant.
                 </li>
                 <li>
-                  This Pre-Verification Sheet (duly signed by Cyber Cafe Operator and Informant).
+                  This Pre-Verification Sheet (duly signed by the Informant / Applicant).
                 </li>
               </ul>
             </div>
 
             {/* Authorized Signatures & Seal Section */}
-            <div className="pt-8 grid grid-cols-3 gap-6 text-center text-xs">
+            <div className="pt-8 grid grid-cols-2 gap-6 text-center text-xs">
               <div className="border-t border-black pt-2">
                 <div className="h-10" />
                 <div className="font-bold">Signature of Informant / Citizen</div>
                 <div className="text-[10px] text-gray-600">Date: _______________</div>
-              </div>
-
-              <div className="border-t border-black pt-2">
-                <div className="h-10" />
-                <div className="font-bold">{activeNode.operatorName}</div>
-                <div className="text-[10px] text-gray-700 font-semibold">{activeNode.name}</div>
-                <div className="text-[10px] text-gray-600 font-mono">CSC ID: {activeNode.cscId}</div>
               </div>
 
               <div className="border-t border-black pt-2">
@@ -1368,7 +1266,7 @@ export default function LegacyBirthDigitizationPortal() {
 
             {/* Footer Notice */}
             <div className="text-[10px] text-gray-500 text-center border-t border-gray-200 pt-3">
-              This is a decentralized pre-verification summary sheet under the West Bengal Directorate of Health Services SBHI SOP Case-I. Final digital signature and JMTP entry are exclusively performed by the Bagula 2 No Gram Panchayat Sub-Registrar.
+              This is a decentralized pre-verification summary sheet under the West Bengal Directorate of Health Services SBHI Case-I Guidelines. Final digital signature and JMTP entry are exclusively performed by the Bagula 2 No Gram Panchayat Sub-Registrar.
             </div>
           </div>
         </div>
@@ -1511,169 +1409,7 @@ export default function LegacyBirthDigitizationPortal() {
       )}
 
       {/* ========================================================================= */}
-      {/* 7. TAB 4: CYBER CAFE NODE AUTHENTICATION SIMULATOR                        */}
-      {/* ========================================================================= */}
-      {activeTab === "operator" && (
-        <div className="max-w-xl mx-auto p-6 rounded-2xl border border-border/80 bg-background space-y-6 shadow-xs">
-          <div className="text-center space-y-1">
-            <div className="w-12 h-12 rounded-2xl bg-primary/10 text-primary flex items-center justify-center mx-auto mb-2">
-              <Shield size={24} />
-            </div>
-            <h3 className="text-base font-bold text-foreground">
-              Cyber Cafe Node & Operator Login
-            </h3>
-            <p className="text-xs text-muted-foreground">
-              Decentralized pre-verification terminal for authorized Bagula 2 No Gram Panchayat cyber cafes.
-            </p>
-          </div>
-
-          <form onSubmit={handleLoginSubmit} className="space-y-4">
-            <div className="space-y-1">
-              <Label className="text-xs font-semibold">Select Registered Cyber Cafe Node</Label>
-              <select
-                value={selectedNodeId}
-                onChange={(e) => {
-                  setSelectedNodeId(e.target.value);
-                  const node = CYBER_CAFE_NODES.find((n) => n.id === e.target.value);
-                  if (node) {
-                    setOperatorMobile(node.phone.replace(/\D/g, "").slice(-10));
-                  }
-                }}
-                className="w-full h-10 px-3 py-2 rounded-md border border-input bg-background text-sm font-medium"
-              >
-                {CYBER_CAFE_NODES.map((node) => (
-                  <option key={node.id} value={node.id}>
-                    {node.name} (CSC ID: {node.cscId} — {node.operatorName})
-                  </option>
-                ))}
-              </select>
-            </div>
-
-            <div className="space-y-1">
-              <Label className="text-xs font-semibold">Registered Operator Mobile</Label>
-              <Input
-                value={operatorMobile}
-                onChange={(e) => setOperatorMobile(e.target.value)}
-                placeholder="10-digit mobile"
-                maxLength={10}
-              />
-            </div>
-
-            <div className="space-y-1">
-              <div className="flex items-center justify-between">
-                <Label className="text-xs font-semibold">Operator 6-Digit OTP</Label>
-                <button
-                  type="button"
-                  onClick={() => {
-                    setOtpValue("928374");
-                    toast.success("Test OTP auto-filled: 928374");
-                  }}
-                  className="text-[11px] text-primary hover:underline font-semibold"
-                >
-                  Quick Fill Test OTP (928374)
-                </button>
-              </div>
-              <Input
-                value={otpValue}
-                onChange={(e) => setOtpValue(e.target.value)}
-                placeholder="Enter 6-digit OTP (e.g. 928374)"
-                maxLength={6}
-                className="font-mono text-center tracking-widest text-lg font-bold"
-              />
-            </div>
-
-            <Button
-              type="submit"
-              className="w-full h-10 bg-[#0B2545] hover:bg-[#07192f] text-white text-xs font-bold rounded-xl"
-            >
-              Authenticate Node Session
-            </Button>
-          </form>
-
-          {/* Current Node Metadata */}
-          <div className="p-4 rounded-xl bg-muted/20 border border-border/60 text-xs space-y-2">
-            <div className="font-bold text-foreground">Node Details:</div>
-            <div className="grid grid-cols-2 gap-2 text-[11px]">
-              <div>
-                <strong>Operator:</strong> {activeNode.operatorName}
-              </div>
-              <div>
-                <strong>CSC ID:</strong> <code className="font-mono">{activeNode.cscId}</code>
-              </div>
-              <div className="col-span-2">
-                <strong>Location:</strong> {activeNode.location}
-              </div>
-              <div className="col-span-2">
-                <strong>Contact:</strong> {activeNode.phone}
-              </div>
-            </div>
-          </div>
-        </div>
-      )}
-
-      {/* ========================================================================= */}
-      {/* 8. TAB 5: SOP GUIDELINES & STATUTORY CHECKLIST                            */}
-      {/* ========================================================================= */}
-      {activeTab === "sop" && (
-        <div className="p-6 rounded-2xl border border-border/80 bg-background space-y-6">
-          <div className="space-y-1">
-            <h3 className="text-base font-bold text-foreground">
-              West Bengal SBHI Case-I Digitization SOP & Statutory Guidelines
-            </h3>
-            <p className="text-xs text-muted-foreground">
-              Guidelines issued by the Directorate of Health Services, Government of West Bengal for legacy birth records.
-            </p>
-          </div>
-
-          <div className="grid md:grid-cols-2 gap-6 text-xs leading-relaxed">
-            <div className="p-4 rounded-xl border border-border/60 bg-muted/20 space-y-2">
-              <h4 className="font-bold text-sm text-foreground">
-                Path A: Legible Manual Record Flow
-              </h4>
-              <p>
-                1. <strong>Verification of Physical Certificate:</strong> Operator checks physical copy for paper watermark, ink consistency, registration number, and official seal of Bagula 2 No Gram Panchayat.
-              </p>
-              <p>
-                2. <strong>Field Mapping:</strong> All names must match official spelling on parents' Aadhaar.
-              </p>
-              <p>
-                3. <strong>File Size Caps:</strong> Certificate scan cannot exceed 100 KB; Mother's ID cannot exceed 50 KB.
-              </p>
-              <p>
-                4. <strong>Office Visit:</strong> Citizen submits summary sheet and original certificate to GP office.
-              </p>
-            </div>
-
-            <div className="p-4 rounded-xl border border-amber-300 bg-amber-50/40 space-y-2 text-amber-950">
-              <h4 className="font-bold text-sm text-amber-900">
-                Path B: Lost / Damaged Record Flow
-              </h4>
-              <p>
-                1. <strong>Police General Diary (GD):</strong> Informant must lodge a General Diary at Hanskhali Police Station citing loss of handwritten certificate.
-              </p>
-              <p>
-                2. <strong>Non-Availability Search:</strong> Registration number is marked "Not Available", prompting the Sub-Registrar to verify against manual paper volume registers.
-              </p>
-              <p>
-                3. <strong>Secondary Age Proof:</strong> School admit card, marksheet, or hospital discharge record is required.
-              </p>
-            </div>
-          </div>
-
-          <div className="p-4 rounded-xl bg-blue-50 border border-blue-200 text-blue-950 text-xs space-y-2">
-            <h4 className="font-bold flex items-center gap-1.5 text-blue-900">
-              <Info size={15} />
-              <span>May 2026 State Re-Verification Mandate</span>
-            </h4>
-            <p>
-              Under active government guidelines, all digitized manual records issued prior to 2016 are subject to physical register re-verification. The citizen must present the physical summary sheet at the Gram Panchayat office so the Sub-Registrar can pull up the record, match the ink, and digitally sign the QR-enabled certificate on the official state portal (janmamrityutathya.wb.gov.in).
-            </p>
-          </div>
-        </div>
-      )}
-
-      {/* ========================================================================= */}
-      {/* 9. TAB 6: OFFICIAL BLANK / RAW A4 PRINT COMPONENT                         */}
+      {/* 7. OFFICIAL BLANK / RAW A4 PRINT COMPONENT                                */}
       {/* ========================================================================= */}
       {activeTab === "raw_a4" && (
         <div className="space-y-4">

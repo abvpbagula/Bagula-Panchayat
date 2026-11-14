@@ -427,7 +427,7 @@ export function AdminAnalyticsSummaryCard({
           </div>
         </Link>
 
-        {/* Metric 2: Cyber Cafe Desk Sessions */}
+        {/* Metric 2: Assisted Desk Sessions */}
         <Link
           to="/admin/profiles-directory"
           className="p-5 group hover:bg-sky-50/40 transition-colors flex items-start justify-between"
@@ -436,7 +436,7 @@ export function AdminAnalyticsSummaryCard({
             <div className="flex items-center gap-1.5 text-xs font-semibold text-sky-800">
               <UserPlus className="w-3.5 h-3.5 text-sky-600" />
               <span>
-                {activeRange.presetKey === "today" ? "Today's Desk Activity" : "Cyber Cafe Desk Intake"}
+                {activeRange.presetKey === "today" ? "Today's Desk Activity" : "Assisted Desk Intake"}
               </span>
             </div>
             <div className="flex items-baseline gap-2 flex-wrap">
@@ -444,7 +444,7 @@ export function AdminAnalyticsSummaryCard({
                 +{metrics.registrations}
               </span>
               <span className="text-[11px] text-muted-foreground font-medium">
-                সাইবার ক্যাফে ডেস্ক
+                অ্যাসিস্টেড ডেস্ক
               </span>
             </div>
 
@@ -458,7 +458,7 @@ export function AdminAnalyticsSummaryCard({
 
             <p className="text-[11px] text-muted-foreground">
               {activeRange.presetKey === "today"
-                ? "Cyber Cafe & DEO sessions logged today"
+                ? "Public & DEO sessions logged today"
                 : `Assisted sessions processed over ${dayCount}-day window`}
             </p>
           </div>
@@ -650,7 +650,7 @@ export function AdminAnalyticsSummaryCard({
                   />
                   <Bar
                     dataKey="registrations"
-                    name="Cyber Cafe Desk Intake"
+                    name="Assisted Desk Intake"
                     fill="#8b5cf6"
                     radius={[6, 6, 0, 0]}
                   />

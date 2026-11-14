@@ -19,8 +19,8 @@ export default function WizardShell({
   title, current, onStepClick, furthest, autoSave, children, footer,
 }: Props) {
   const location = useLocation();
-  const isCyberApply = location.pathname.startsWith("/apply");
-  const fallbackUrl = isCyberApply ? "/cyber-cafe" : "/admin/deo";
+  const isPublicApply = location.pathname.startsWith("/apply");
+  const fallbackUrl = isPublicApply ? "/" : "/admin/deo";
   const index = WIZARD_STEPS.findIndex((s) => s.key === current);
   const pct = ((index + 1) / WIZARD_STEPS.length) * 100;
 
@@ -28,7 +28,7 @@ export default function WizardShell({
     <div className="mx-auto w-full max-w-4xl px-4 py-6">
       <GoBackButton
         fallbackUrl={fallbackUrl}
-        label={isCyberApply ? "Back to Cyber Cafe Hub" : "Back to DEO Dashboard"}
+        label={isPublicApply ? "Back to Home" : "Back to DEO Dashboard"}
         className="mb-3 -ml-2"
       />
       <header className="mb-4">

@@ -271,7 +271,7 @@ export default function AdminPortalControls() {
               <span>2. Form Size &amp; Layout Density</span>
             </div>
             <p className="text-xs text-muted-foreground">
-              Adjust input padding, typography scaling, and vertical spacing throughout the Cyber Cafe and DEO Application Wizard.
+              Adjust input padding, typography scaling, and vertical spacing throughout the Public Portal and DEO Application Wizard.
             </p>
           </div>
 
@@ -290,7 +290,7 @@ export default function AdminPortalControls() {
               {
                 id: "spacious" as const,
                 title: "Spacious Layout (High Legibility)",
-                desc: "Expanded touch targets and generous margins optimized for Cyber Cafe kiosks and mobile screens.",
+                desc: "Expanded touch targets and generous margins optimized for public kiosks and mobile screens.",
               },
             ].map((layout) => {
               const isSelected = controls.formSizeLayout === layout.id;
@@ -320,7 +320,7 @@ export default function AdminPortalControls() {
               <span>3. Office Authentication Governance Policy (DEO · Admin · Super Admin)</span>
             </div>
             <p className="text-xs text-muted-foreground">
-              Authoritative Super Admin control over official staff authentication channels. Public and Cyber Cafe portals operate without login gates; authentication applies strictly to office roles.
+              Authoritative Super Admin control over official staff authentication channels. Public portals operate without login gates; authentication applies strictly to office roles.
             </p>
           </div>
 
@@ -366,7 +366,7 @@ export default function AdminPortalControls() {
             <ShieldAlert className="h-4 w-4 text-primary shrink-0 mt-0.5" aria-hidden="true" />
             <div>
               <span className="font-semibold text-foreground">Office-Only Login Enforcement:</span>{" "}
-              Only DEO, Admin, and Super Admin accounts authenticate through /admin. Public citizens and Cyber Cafe desks access assisted forms openly without login credentials.
+              Only DEO, Admin, and Super Admin accounts authenticate through /admin. Public applicants access open portal forms without login credentials.
             </div>
           </div>
         </Card>
@@ -424,7 +424,7 @@ export default function AdminPortalControls() {
               <span>5. Application Form Fields Configuration</span>
             </div>
             <p className="text-xs text-muted-foreground">
-              Enable or disable optional administrative data collection fields in the Cyber Cafe and DEO Application Wizard.
+              Enable or disable optional administrative data collection fields in the Public Portal and DEO Application Wizard.
             </p>
           </div>
 

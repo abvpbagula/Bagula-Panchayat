@@ -534,7 +534,7 @@ export default function Verify({ defaultTab }: VerifyProps) {
                       to="/birth-digitization-form"
                       className="inline-flex items-center gap-1.5 px-3.5 py-2 rounded-xl border border-slate-200 text-slate-700 hover:bg-slate-50 font-bold"
                     >
-                      <span>Pre-2016 Legacy Digitization SOP →</span>
+                      <span>Pre-2016 Legacy Digitization Portal →</span>
                     </Link>
                   </div>
                 </div>

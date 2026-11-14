@@ -29,12 +29,12 @@ export const DEFAULT_APPEARANCE_BRANDING: AppearanceBrandingConfig = {
   gpNameBn: "বগুলা ২ নং গ্রাম পঞ্চায়েত",
   hierarchyEn: "Under Hanskhali Panchayat Samity, Nadia District, West Bengal",
   hierarchyBn: "হাঁসখালি পঞ্চায়েত সমিতি, নদীয়া জেলা, পশ্চিমবঙ্গ",
-  portalTitle: "BAGULA II GRAM PANCHAYAT — CYBER CAFE & SERVICE PORTAL",
+  portalTitle: "BAGULA II GRAM PANCHAYAT — PUBLIC SERVICE PORTAL",
   portalSubtitle: "Government of West Bengal — Department of Panchayats & Rural Development",
   partyTheme: "default",
   layoutDensity: "standard",
   fontFamily: "sans",
-  footerBrandingText: "Cyber Cafe & Digital Administrative Platform — Bagula 2 No Gram Panchayat. All rights reserved.",
+  footerBrandingText: "Digital Administrative Platform — Bagula 2 No Gram Panchayat. All rights reserved.",
   emblemType: "ashoka",
   showGovTricolor: true,
 };
@@ -66,13 +66,13 @@ export interface PublicWebsiteConfig {
 }
 
 export const DEFAULT_PUBLIC_WEBSITE: PublicWebsiteConfig = {
-  heroTitleEn: "Welcome to Bagula 2 No Gram Panchayat Cyber Cafe & Service Portal",
-  heroTitleBn: "বগুলা ২ নং গ্রাম পঞ্চায়েতের সাইবার ক্যাফে ও পরিষেবা পোর্টালে স্বাগতম",
+  heroTitleEn: "Welcome to Bagula 2 No Gram Panchayat Public Service Portal",
+  heroTitleBn: "বগুলা ২ নং গ্রাম পঞ্চায়েতের নাগরিক পরিষেবা পোর্টালে স্বাগতম",
   heroSubtitleEn: "Transparent, accountable, and paperless public service delivery under Hanskhali Block, Nadia.",
   heroSubtitleBn: "স্বচ্ছ, প্রযুক্তিবান্ধব ও সহজলভ্য ডিজিটাল প্রশাসনিক সেবা ব্যবস্থা।",
-  ctaPrimaryLabelEn: "Open Cyber Cafe Hub",
-  ctaPrimaryLabelBn: "সাইবার ক্যাফে হাব খুলুন",
-  ctaPrimaryPath: "/cyber-cafe",
+  ctaPrimaryLabelEn: "Apply Online",
+  ctaPrimaryLabelBn: "অনলাইন আবেদন করুন",
+  ctaPrimaryPath: "/apply/warish",
   ctaSecondaryLabelEn: "Verify QR Certificate",
   ctaSecondaryLabelBn: "কিউআর সার্টিফিকেট যাচাই",
   ctaSecondaryPath: "/verify",
@@ -104,8 +104,7 @@ export interface NavigationLinkItem {
 
 export const DEFAULT_NAVIGATION_LINKS: NavigationLinkItem[] = [
   { id: "nav-home", labelEn: "Home", labelBn: "প্রধান পাতা", path: "/", section: "header_main", isExternal: false, enabled: true, order: 1 },
-  { id: "nav-cyber", labelEn: "Cyber Cafe Hub", labelBn: "সাইবার ক্যাফে হাব", path: "/cyber-cafe", section: "header_main", isExternal: false, enabled: true, order: 2 },
-  { id: "nav-verify", labelEn: "Verify Certificate", labelBn: "সার্টিফিকেট যাচাই", path: "/verify", section: "header_main", isExternal: false, enabled: true, order: 3 },
+  { id: "nav-verify", labelEn: "Verify Certificate", labelBn: "সার্টিফিকেট যাচাই", path: "/verify", section: "header_main", isExternal: false, enabled: true, order: 2 },
   { id: "nav-representatives", labelEn: "Elected Members", labelBn: "জনপ্রতিনিধিগণ", path: "/elected-representatives", section: "header_main", isExternal: false, enabled: true, order: 4 },
   { id: "nav-admin", labelEn: "Office Login", labelBn: "অফিসিয়াল লগইন", path: "/admin", section: "header_main", isExternal: false, enabled: true, order: 5 },
 
@@ -122,7 +121,7 @@ export const DEFAULT_NAVIGATION_LINKS: NavigationLinkItem[] = [
   { id: "ext-egiye", labelEn: "Egiye Bangla", labelBn: "এগিয়ে বাংলা", path: "https://wb.gov.in", section: "footer_govt", isExternal: true, enabled: true, order: 4 },
 
   // Footer legal
-  { id: "nav-faq", labelEn: "Cyber Cafe FAQs", labelBn: "প্রশ্নোত্তর", path: "/faq", section: "footer_quick", isExternal: false, enabled: true, order: 1 },
+  { id: "nav-faq", labelEn: "Service FAQs", labelBn: "প্রশ্নোত্তর", path: "/faq", section: "footer_quick", isExternal: false, enabled: true, order: 1 },
 ];
 
 /* ------------------------------------------------------------------ */

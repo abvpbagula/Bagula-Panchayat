@@ -392,13 +392,6 @@ export default function DeoDashboard() {
                   badge={counts.submitted > 0 ? String(counts.submitted) : undefined}
                 />
                 <PrimaryAction
-                  to="#cyber-cafe-drafts"
-                  title="📥 Cyber Cafe Drafts"
-                  desc="Cyber Cafe intake within 3 days"
-                  icon={Inbox}
-                  tone="emerald"
-                />
-                <PrimaryAction
                   to="/admin/warish"
                   title="📋 My Completed Applications"
                   desc="Issued with memo registered"
@@ -469,30 +462,13 @@ export default function DeoDashboard() {
               </ul>
             </section>
 
-            {/* SECTION 2c — CYBER CAFE DRAFTS (WITHIN 3 DAYS) */}
-            <section
-              id="cyber-cafe-drafts"
-              className="rounded-2xl border border-emerald-200 bg-emerald-50/50 backdrop-blur-sm p-5 shadow-sm scroll-mt-4"
-            >
-              <SectionTitle
-                icon={Inbox}
-                title="📥 Cyber Cafe Drafts (Within 3 Days)"
-                hint="Assisted Cyber Cafe submissions awaiting office review — prepare an office working copy"
-              />
-              <p className="mt-3 text-xs text-muted-foreground">
-                No pending Cyber Cafe intake drafts yet. Applications submitted via Cyber Cafe Hub desks land here for
-                3 days before moving automatically to 📂 Office Applications for standard DEO and Admin processing.
-              </p>
-            </section>
-
             {/* SECTION 3 — MY WORK QUEUE */}
             <section>
               <SectionTitle icon={ClipboardList} title="📊 My Work Queue" hint="Live counts of your applications" />
-              <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-3 mt-3">
+              <div className="grid grid-cols-2 md:grid-cols-4 gap-3 mt-3">
                 <QueueCard label="📝 Drafts" value={counts.drafts} hint="In progress" to="/admin/warish" icon={FileEdit} tone="slate" />
                 <QueueCard label="📤 Submitted" value={counts.submitted} hint="With Admin" to="/admin/warish" icon={Send} tone="sky" />
                 <QueueCard label="🔄 Returned" value={counts.returned} hint="For modification" to="#returned-for-modification" icon={FileWarning} tone="rose" />
-                <QueueCard label="📥 Cyber Drafts" value={0} hint="Within 3 days" to="#cyber-cafe-drafts" icon={Inbox} tone="amber" />
                 <QueueCard label="📋 Completed" value={counts.completed} hint="Issued" to="/admin/warish" icon={FileCheck2} tone="emerald" />
               </div>
               <p className="mt-2 text-[11px] text-muted-foreground">
@@ -502,22 +478,20 @@ export default function DeoDashboard() {
 
             {/* SECTION 4 — WORKFLOW TRACKER */}
             <section className="rounded-2xl border border-border/40 bg-white/85 backdrop-blur-sm p-5 shadow-sm">
-              <SectionTitle icon={CircleDot} title="🔗 Workflow Tracker" hint="Cyber Cafe intake → DEO → Admin → Public verification" />
-              <ol className="mt-4 grid grid-cols-1 md:grid-cols-7 gap-2">
-                <WorkflowStep n={1} label="💻 Cyber Cafe Desk" icon={Users} />
+              <SectionTitle icon={CircleDot} title="🔗 Workflow Tracker" hint="Online intake → DEO → Admin → Public verification" />
+              <ol className="mt-4 grid grid-cols-1 md:grid-cols-5 gap-2">
+                <WorkflowStep n={1} label="🟢 DEO (You)" icon={ClipboardList} interactive to="/admin/warish" active />
                 <WorkflowArrow />
-                <WorkflowStep n={2} label="🟢 DEO (You)" icon={ClipboardList} interactive to="/admin/warish" active />
+                <WorkflowStep n={2} label="📤 Submitted" icon={Send} interactive to="/admin/warish" />
                 <WorkflowArrow />
-                <WorkflowStep n={3} label="📤 Submitted" icon={Send} interactive to="/admin/warish" />
-                <WorkflowArrow />
-                <WorkflowStep n={4} label="🟠 Admin Review" icon={FileCheck2} />
+                <WorkflowStep n={3} label="🟠 Admin Review" icon={FileCheck2} />
               </ol>
               <ol className="mt-2 grid grid-cols-1 md:grid-cols-5 gap-2">
-                <WorkflowStep n={5} label="🧾 Memo Registration" icon={Stamp} />
+                <WorkflowStep n={4} label="🧾 Memo Registration" icon={Stamp} />
                 <WorkflowArrow />
-                <WorkflowStep n={6} label="📜 Certificate Issued" icon={ShieldCheck} />
+                <WorkflowStep n={5} label="📜 Certificate Issued" icon={ShieldCheck} />
                 <WorkflowArrow />
-                <WorkflowStep n={7} label="🔍 Public Verification" icon={Search} />
+                <WorkflowStep n={6} label="🔍 Public Verification" icon={Search} />
               </ol>
               <p className="mt-3 text-[11px] text-muted-foreground">
                 Only the DEO stage is actionable for you. Later stages are status only.

@@ -329,7 +329,7 @@ export function CitizenFaqSection({ onSelectServiceGuide, className = "" }: Citi
       {/* Header */}
       <div className="text-center space-y-2">
         <p className="text-xs font-semibold uppercase tracking-wider text-primary">
-          Cyber Cafe &amp; Panchayat Information Desk
+          Bagula 2 No Gram Panchayat Information Desk
         </p>
         <h2 className="text-2xl sm:text-3xl font-bold tracking-tight text-foreground">
           Frequently Asked Questions

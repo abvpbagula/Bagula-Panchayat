@@ -301,7 +301,7 @@ export const GramSansadDeclarationPrint: React.FC<Props> = ({ caseData, onPrint 
         {/* FOOTER NOTICE / OSCAR UPLOAD GUIDELINE */}
         <div className="border-t border-slate-300 pt-3 text-[11px] font-sans text-slate-500 text-center space-y-0.5">
           <p className="font-bold text-slate-700">
-            Office Upload Preparation Rule (অফিস ও সাইবার ক্যাফে নির্দেশিকা):
+            Office Upload Preparation Rule (অফিস নথি প্রস্তুতি নির্দেশিকা):
           </p>
           <p>
             Merge this authenticated declaration sheet with the clear scanned copy of the existing SC/ST certificate into a single PDF document (recommended size &lt; 2 MB) for direct upload on <strong>castecertificatewb.gov.in (OSCAR)</strong> portal.

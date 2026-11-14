@@ -226,13 +226,13 @@ export async function createDraft(
   kind: ApplicationKind,
   draft: ApplicationDraft,
   parentId?: string | null,
-  cyberCafeMode = false,
+  publicApplyMode = false,
 ): Promise<string> {
   const { data: sessionData } = await supabase.auth.getSession();
   const user = sessionData?.session?.user ?? null;
 
   // Office DEO / Admin / Super Admin flow requires authenticated office session
-  if (!cyberCafeMode) {
+  if (!publicApplyMode) {
     if (!user) throw new Error("You must be signed in as an Office DEO/Admin to start an application.");
 
     const { data: profile } = await supabase
@@ -260,7 +260,7 @@ export async function createDraft(
       }
     }
   } else {
-    // Soft anti-abuse check for open Cyber Cafe intake when mobile is provided
+    // Soft anti-abuse check for open public intake when mobile is provided
     const cleanMobile = (draft.applicant.mobile || "").replace(/\D/g, "").slice(-10);
     if (cleanMobile.length === 10) {
       try {
@@ -323,7 +323,7 @@ export async function createDraft(
     village: (payload.village as string | null) ?? null,
     data: payload.data as Json,
     ...(user ? { created_by: user.id } : {}),
-    source: cyberCafeMode ? "cyber_cafe" : "staff_portal",
+    source: publicApplyMode ? "public_portal" : "staff_portal",
     contact_mobile: draft.applicant.mobile || null,
     contact_email: draft.applicant.email || null,
   };
@@ -348,8 +348,8 @@ export async function createDraft(
   }
 
   if (directError || !directRow) {
-    // Resilient local draft persistence so neither Cyber Cafe operators nor DEOs are blocked by RLS
-    const prefix = cyberCafeMode ? "app-resilient-cyber" : "app-resilient-deo";
+    // Resilient local draft persistence so neither public applicants nor DEOs are blocked by RLS
+    const prefix = publicApplyMode ? "app-resilient-public" : "app-resilient-deo";
     const fallbackId = `${prefix}-${Date.now()}-${Math.random().toString(36).slice(2, 7)}`;
     saveLocalResilientApp({
       id: fallbackId,
@@ -363,7 +363,7 @@ export async function createDraft(
       data: payload.data,
       contact_mobile: draft.applicant.mobile || null,
       contact_email: draft.applicant.email || null,
-      source: cyberCafeMode ? "cyber_cafe" : "staff_portal",
+      source: publicApplyMode ? "public_portal" : "staff_portal",
       created_by: user?.id ?? null,
       created_at: new Date().toISOString(),
     });
@@ -374,14 +374,14 @@ export async function createDraft(
     try {
       await supabase.from("activity_logs").insert({
         actor_user_id: user.id,
-        action_type: cyberCafeMode ? "CREATE_CYBER_DRAFT" : "CREATE_DRAFT",
+        action_type: publicApplyMode ? "CREATE_PUBLIC_DRAFT" : "CREATE_DRAFT",
         target_table: KIND_TABLE[kind],
         target_id: directRow.id,
         metadata: {
           kind,
           verification_id: verificationId,
           applicant_name: payload.applicant_name,
-          source: cyberCafeMode ? "cyber_cafe" : "staff_portal",
+          source: publicApplyMode ? "public_portal" : "staff_portal",
         },
       });
     } catch {
@@ -392,7 +392,7 @@ export async function createDraft(
   return directRow.id;
 }
 
-export async function saveDraft(kind: ApplicationKind, id: string, draft: ApplicationDraft, _cyberCafeMode = false) {
+export async function saveDraft(kind: ApplicationKind, id: string, draft: ApplicationDraft, _publicApplyMode = false) {
   const payload: Record<string, unknown> = {
     applicant_name: draft.applicant.name || "",
     village: resolved(draft.applicant.village, draft.applicant.villageManual) || null,
@@ -529,7 +529,7 @@ export async function findDuplicates(
   return [];
 }
 
-export async function submitApplication(kind: ApplicationKind, id: string, _cyberCafeMode = false) {
+export async function submitApplication(kind: ApplicationKind, id: string, _publicApplyMode = false) {
   const now = new Date().toISOString();
 
   if (!id.startsWith("app-resilient-")) {

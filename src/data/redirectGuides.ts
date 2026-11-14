@@ -414,9 +414,9 @@ export const REDIRECT_GUIDES: Record<string, RedirectGuide> = {
     portalName: "Bagula 2 No Gram Panchayat Digitization Pre-Verification Tool",
     portalUrl: "https://bagulabirth.lovable.app",
     officialDept: "Bagula 2 No Gram Panchayat, Nadia, West Bengal",
-    description: "Decentralized digitization pre-verification tool for converting handwritten birth certificates issued before 2016 into modern, QR-coded digital records under West Bengal SBHI SOP Case-I.",
-    bengaliDescription: "২০১৬ সালের আগের পুরোনো হাতে লেখা জন্ম সার্টিফিকেট যাচাই করে ডিজিটাল কিউআর কোডযুক্ত করার জন্য সাইবার ক্যাফে ও নাগরিকদের অনলাইন আবেদন প্রি-ভেরিফিকেশন ব্যবস্থা।",
-    regulatoryInfo: "Section 12/17 of RBD Act, 1969 & West Bengal SBHI Digitization SOP Case-I.",
+    description: "Decentralized digitization pre-verification tool for converting handwritten birth certificates issued before 2016 into modern, QR-coded digital records under West Bengal SBHI Case-I Guidelines.",
+    bengaliDescription: "২০১৬ সালের আগের পুরোনো হাতে লেখা জন্ম সার্টিফিকেট যাচাই করে ডিজিটাল কিউআর কোডযুক্ত করার জন্য নাগরিকদের অনলাইন আবেদন প্রি-ভেরিফিকেশন ব্যবস্থা।",
+    regulatoryInfo: "Section 12/17 of RBD Act, 1969 & West Bengal SBHI Digitization Case-I Guidelines.",
     turnaroundTime: "3 to 7 working days following GP Volume comparison",
     validity: "Permanent QR-verified state certificate",
     feeInfo: "Nil / As per state digitization guidelines.",
@@ -467,14 +467,14 @@ export const REDIRECT_GUIDES: Record<string, RedirectGuide> = {
     ],
     videoGuide: {
       title: "How to Digitize Old Handwritten Birth Certificate in West Bengal",
-      bengaliTitle: "পুরোনো জন্ম সার্টিফিকেট ডিজিটাল করার নিয়ম ও এসওপি (ভিডিও গাইড)",
-      channel: "Bagula 2 No Gram Panchayat Cyber Cafe Network & VLE Support",
+      bengaliTitle: "পুরোনো জন্ম সার্টিফিকেট ডিজিটাল করার নিয়ম ও নির্দেশিকা (ভিডিও গাইড)",
+      channel: "Bagula 2 No Gram Panchayat Digital Guidance & Support",
       youtubeId: "Ww7o6H4qX2g",
-      youtubeUrl: "https://www.youtube.com/results?search_query=how+to+digitize+old+birth+certificate+west+bengal+sop",
+      youtubeUrl: "https://www.youtube.com/results?search_query=how+to+digitize+old+birth+certificate+west+bengal",
       duration: "6 mins 40 secs",
       highlights: [
         "Difference between Path A (legible copy) and Path B (Police GD lost report)",
-        "Zero-retention data privacy standards for public cyber cafe computers",
+        "Zero-retention data privacy standards for public computers",
         "Generating printable summary sheet for Bagula 2 No Gram Panchayat counter"
       ]
     },
@@ -681,7 +681,7 @@ export const REDIRECT_GUIDES: Record<string, RedirectGuide> = {
     videoGuide: {
       title: "How to Apply for Panchayat Income Certificate Online in West Bengal (WBPMS)",
       bengaliTitle: "অনলাইনে গ্রাম পঞ্চায়েত ইনকাম সার্টিফিকেট আবেদন করার সহজ নিয়ম (ভিডিও গাইড)",
-      channel: "Digital Seva Bangla & Mondal Cyber Cafe",
+      channel: "Digital Seva Bangla & State e-Gov Support",
       youtubeId: "q6h3K7x_J9w",
       youtubeUrl: "https://www.youtube.com/results?search_query=how+to+apply+panchayat+income+certificate+online+west+bengal+wbpms",
       duration: "7 mins 45 secs",
@@ -1243,7 +1243,7 @@ export const REDIRECT_GUIDES: Record<string, RedirectGuide> = {
     title: "Warish (Succession / Legal Heir) Certificate",
     bengaliTitle: "ওয়ারিশান / উত্তরাধিকার শংসাপত্র সংগ্রহ পদ্ধতি",
     category: "Panchayat Civil Certificate",
-    portalName: "Bagula 2 No Gram Panchayat Cyber Cafe Hub",
+    portalName: "Bagula 2 No Gram Panchayat Online Portal",
     portalUrl: "/apply/warish",
     officialDept: "Office of the Bagula 2 No Gram Panchayat, Hanskhali, Nadia",
     description: "Official civil certification of surviving legal heirs of a deceased resident of Bagula 2 No Gram Panchayat under Hindu Succession Act, 1956 & Indian Succession Act, 1925 for land mutation at BL&LRO, bank account settlement, pension, and property inheritance.",
@@ -1278,9 +1278,9 @@ export const REDIRECT_GUIDES: Record<string, RedirectGuide> = {
       },
       {
         step: 4,
-        title: "Submit via Cyber Cafe or Office DEO Desk",
-        bengaliTitle: "সাইবার ক্যাফে বা পঞ্চায়েত ডিইও ডেস্কে আবেদনপত্র দাখিল",
-        description: "Apply online through the Bagula 2 No Gram Panchayat Cyber Cafe Hub (/apply/warish) by uploading scans of death proof, affidavit, and heir ID proofs. Alternatively, submit the physical file at the GP Data Entry Operator (DEO) desk.",
+        title: "Submit Online or at Office DEO Desk",
+        bengaliTitle: "অনলাইনে বা পঞ্চায়েত ডিইও ডেস্কে আবেদনপত্র দাখিল",
+        description: "Apply online through the Bagula 2 No Gram Panchayat Portal (/apply/warish) by uploading scans of death proof, affidavit, and heir ID proofs. Alternatively, submit the physical file at the GP Data Entry Operator (DEO) desk.",
         tips: "Keep your digital Acknowledgement Number safely noted to track progress online."
       },
       {
@@ -1328,7 +1328,7 @@ export const REDIRECT_GUIDES: Record<string, RedirectGuide> = {
     title: "Dependent Certificate (Family Dependency)",
     bengaliTitle: "নির্ভরশীলতা বা পোষ্য শংসাপত্র সংগ্রহ নির্দেশিকা",
     category: "Panchayat Civil Certificate",
-    portalName: "Bagula 2 No Gram Panchayat Cyber Cafe Hub",
+    portalName: "Bagula 2 No Gram Panchayat Online Portal",
     portalUrl: "/apply/dependent",
     officialDept: "Office of the Bagula 2 No Gram Panchayat, Hanskhali, Nadia",
     description: "Official dependency certification issued by Bagula 2 No Gram Panchayat for family members residing with and wholly dependent on a government, railway, defence, or private employee / pensioner for medical benefits (CGHS/WBHS), compassionate appointment, railway passes, and education fee relief.",
@@ -1460,8 +1460,8 @@ export const REDIRECT_GUIDES: Record<string, RedirectGuide> = {
       },
       {
         step: 5,
-        title: "Submit Online or at Cyber Cafe / GP DEO Desk",
-        bengaliTitle: "পঞ্চায়েত ডিইও ডেস্কে বা অনুমোদিত সাইবার ক্যাফেতে আবেদন দাখিল",
+        title: "Submit Online or at GP DEO Desk",
+        bengaliTitle: "অনলাইনে বা পঞ্চায়েত ডিইও ডেস্কে আবেদন দাখিল",
         description: "The operator enters the applicant, voter particulars, Draft Roll 2025 parent table, and marital coordinates into the Bagula II GP Linkage Certificate Portal. The system generates an official draft with verification hash.",
         tips: "You can preview the filled data or print a blank official format ('খালি ফরম') for physical processing if needed."
       },
@@ -1527,7 +1527,7 @@ export const REDIRECT_GUIDES: Record<string, RedirectGuide> = {
       youtubeUrl: "https://www.youtube.com/results?search_query=linkage+certificate+gram+panchayat+west+bengal+voter+list+married+woman",
       duration: "8 mins 30 secs",
       highlights: [
-        "SOP for married women transferring voter registration via Form 8",
+        "Procedure for married women transferring voter registration via Form 8",
         "Extracting parents' Part No. and Serial No. from Draft Electoral Roll 2025",
         "Mandatory 6 documents: Madhyamik admit card, husband's GP certificate & panchayat tax",
         "Dual signing workflow: Counter Signed by Secretary/EA and signed by Prodhan Smt. Susmita Biswas Barman",
@@ -1539,21 +1539,6 @@ export const REDIRECT_GUIDES: Record<string, RedirectGuide> = {
 };
 
 export function getRedirectGuide(key: string): RedirectGuide {
-  // Check if live dynamic Master Data override exists in local storage
-  if (typeof window !== "undefined") {
-    try {
-      const cached = localStorage.getItem("bagula_sop_master_guides_cache_v1");
-      if (cached) {
-        const parsed = JSON.parse(cached);
-        if (parsed && parsed[key]) {
-          return parsed[key];
-        }
-      }
-    } catch {
-      // Fallback to static
-    }
-  }
-
   if (REDIRECT_GUIDES[key]) {
     return REDIRECT_GUIDES[key];
   }

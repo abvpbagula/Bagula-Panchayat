@@ -53,119 +53,22 @@ export interface DeoConfig {
   notes?: string;
 }
 
-export interface CyberCafeNodeItem {
-  id: string;
-  name: string;
-  cscId: string;
-  operatorName: string;
-  address: string;
-  mobile: string;
-  email?: string;
-  verified: boolean;
-  status: "active" | "suspended" | "quota_throttled";
-  dailyLimit: number;
-  monthlyLimit: number;
-  todayCount: number;
-  monthCount: number;
-  allowedServices: string[];
-  registeredAt: string;
-  notes?: string;
-}
-
 export interface GlobalQuotaPolicy {
   defaultDeoDailyLimit: number;
-  defaultCyberDailyLimit: number;
   requireSuperAdminApprovalForExceed: boolean;
   strictDeoTypeEnforcement: boolean;
 }
 
 const STORAGE_KEY_DEOS = "b2gp_deo_configs_store";
-const STORAGE_KEY_CYBER = "b2gp_cyber_nodes_store";
 const STORAGE_KEY_POLICY = "b2gp_global_quota_policy";
 
 export const LIMITS_UPDATED_EVENT = "b2gp_quotas_updated";
 
 const DEFAULT_GLOBAL_POLICY: GlobalQuotaPolicy = {
   defaultDeoDailyLimit: 25,
-  defaultCyberDailyLimit: 50,
   requireSuperAdminApprovalForExceed: true,
   strictDeoTypeEnforcement: true,
 };
-
-export const INITIAL_CYBER_CAFES: CyberCafeNodeItem[] = [
-  {
-    id: "trust-media",
-    name: "Trust Media CSC",
-    cscId: "373345540017",
-    operatorName: "Samrat Biswas",
-    address: "Muraghacha Colony, Bagula II GP, Nadia - 741502",
-    mobile: "9832001122",
-    email: "trustmedia.bagula@gmail.com",
-    verified: true,
-    status: "active",
-    dailyLimit: 50,
-    monthlyLimit: 600,
-    todayCount: 14,
-    monthCount: 182,
-    allowedServices: ["birth_digitization", "warish_precheck", "cyber_cafe_intake"],
-    registeredAt: "2024-01-15T10:00:00Z",
-    notes: "Primary high-volume cyber node in Muraghacha area. Excellent scan quality.",
-  },
-  {
-    id: "nayan-mondal",
-    name: "Nayan Mondal CSC",
-    cscId: "373345540248",
-    operatorName: "Nayan Mondal",
-    address: "Bagula Rail Gate Bazaar, Bagula II GP, Nadia - 741502",
-    mobile: "9733112233",
-    email: "nayan.csc.bagula@gmail.com",
-    verified: true,
-    status: "active",
-    dailyLimit: 40,
-    monthlyLimit: 500,
-    todayCount: 9,
-    monthCount: 145,
-    allowedServices: ["birth_digitization", "warish_precheck"],
-    registeredAt: "2024-02-10T11:30:00Z",
-    notes: "Rail Gate Bazaar center. High citizen footfall during morning hours.",
-  },
-  {
-    id: "joy-guru",
-    name: "Joy Guru Cyber Cafe CSC",
-    cscId: "373345540912",
-    operatorName: "Bappa Sarkar",
-    address: "Badkulla-Hanskhali Road, Bagula II GP, Nadia - 741502",
-    mobile: "9647223344",
-    email: "joyguru.cyber.bappa@gmail.com",
-    verified: true,
-    status: "active",
-    dailyLimit: 35,
-    monthlyLimit: 400,
-    todayCount: 6,
-    monthCount: 98,
-    allowedServices: ["birth_digitization", "warish_precheck", "cyber_cafe_intake"],
-    registeredAt: "2024-03-01T09:15:00Z",
-    notes: "Hanskhali connecting corridor node.",
-  },
-  {
-    id: "ma-tara-telecom",
-    name: "Maa Tara Digital Cyber Point",
-    cscId: "373345540441",
-    operatorName: "Sourav Paul",
-    address: "Bathanpara High School More, Bagula II GP, Nadia",
-    mobile: "9434889900",
-    email: "maatara.digital741@gmail.com",
-    verified: true,
-    status: "active",
-    dailyLimit: 30,
-    monthlyLimit: 350,
-    todayCount: 4,
-    monthCount: 72,
-    allowedServices: ["birth_digitization", "cyber_cafe_intake"],
-    registeredAt: "2024-05-18T14:20:00Z",
-    notes: "Fast biometric scanner setup for student and senior citizen records.",
-  },
-];
 
 export const SEEDED_CITIZEN_PROFILES: CitizenProfileItem[] = [
   {
@@ -282,7 +185,7 @@ export async function saveGlobalQuotaPolicy(policy: GlobalQuotaPolicy): Promise<
     const res = await saveBusinessRule(
       "global_quota_policy",
       policy as unknown as Record<string, unknown>,
-      "Global quotas for cyber cafes and DEO permissions"
+      "Global quotas and DEO permissions"
     );
 
     return res.success;
@@ -540,15 +443,17 @@ export async function fetchFullDeoDirectory(): Promise<DeoConfig[]> {
   const matchedProfiles = (profiles ?? []).filter((p: any) => {
     const emailLower = (p.email || "").toLowerCase();
     return (
-      deoUserIds.has(p.user_id) ||
-      p.designation_code === "deo" ||
-      p.designation === "deo" ||
-      emailLower === "nitush8343980898@gmail.com" ||
-      emailLower.includes("deo") ||
-      (Array.isArray(p.service_scope) &&
-        p.service_scope.length > 0 &&
-        !emailLower.includes("super_admin") &&
-        !emailLower.includes("admin"))
+      emailLower !== "nitush8343980898@gmail.com" &&
+      emailLower !== "bagulaiiofficerecords@gmail.com" &&
+      (deoUserIds.has(p.user_id) ||
+        p.designation_code === "deo" ||
+        p.designation === "deo" ||
+        emailLower === "nitush6488@gmail.com" ||
+        emailLower.includes("deo") ||
+        (Array.isArray(p.service_scope) &&
+          p.service_scope.length > 0 &&
+          !emailLower.includes("super_admin") &&
+          !emailLower.includes("admin")))
     );
   });
 
@@ -627,11 +532,11 @@ export async function fetchFullDeoDirectory(): Promise<DeoConfig[]> {
     }
   }
 
-  // Guarantee nitush8343980898@gmail.com is present as primary DEO node
-  if (!result.some((d) => d.email?.toLowerCase() === "nitush8343980898@gmail.com")) {
-    const defaultDeo: DeoConfig = cachedConfigs["nitush8343980898@gmail.com"] || {
+  // Guarantee nitush6488@gmail.com is present as primary DEO node
+  if (!result.some((d) => d.email?.toLowerCase() === "nitush6488@gmail.com")) {
+    const defaultDeo: DeoConfig = cachedConfigs["nitush6488@gmail.com"] || {
       userId: "deo-nitush-authoritative",
-      email: "nitush8343980898@gmail.com",
+      email: "nitush6488@gmail.com",
       displayName: "Nitush (Official DEO Node)",
       employeeId: "DEO-BGL2-01",
       allowedCertificates: ["warish", "dependent", "linkage"],
@@ -733,8 +638,9 @@ export async function checkDeoCertificatePermission(
     const emailNorm = userProfile?.email?.trim().toLowerCase() ?? "";
     if (
       emailNorm === "bagula2nogp111@gmail.com" ||
+      emailNorm === "bagulaiiofficerecords@gmail.com" ||
       emailNorm === "nitish374482@gmail.com" ||
-      emailNorm === "nitush6488@gmail.com" ||
+      emailNorm === "nitush8343980898@gmail.com" ||
       emailNorm.includes("super_admin") ||
       emailNorm.includes("admin") ||
       userProfile?.designation === "pradhan" ||
@@ -788,94 +694,4 @@ export async function checkDeoCertificatePermission(
   }
 
   return { allowed: true, permittedTypes: config.allowedCertificates };
-}
-
-/* ------------------------------------------------------------------ */
-/* Cyber Cafe / CSC Operators Directory & Limits                      */
-/* ------------------------------------------------------------------ */
-
-export function getCachedCyberCafes(): CyberCafeNodeItem[] {
-  try {
-    const raw = localStorage.getItem(STORAGE_KEY_CYBER);
-    if (raw) return JSON.parse(raw);
-  } catch (_e) {
-    // ignore parse error
-  }
-  return INITIAL_CYBER_CAFES;
-}
-
-export function saveCachedCyberCafes(nodes: CyberCafeNodeItem[]) {
-  try {
-    localStorage.setItem(STORAGE_KEY_CYBER, JSON.stringify(nodes));
-    window.dispatchEvent(new CustomEvent(LIMITS_UPDATED_EVENT, { detail: { type: "cyber_nodes", nodes } }));
-  } catch (_e) {
-    // ignore storage error
-  }
-}
-
-export async function getCyberCafeDirectory(): Promise<CyberCafeNodeItem[]> {
-  try {
-    const loaded = await loadBusinessRule<CyberCafeNodeItem[]>(
-      "cyber_cafe_directory",
-      []
-    );
-
-    if (Array.isArray(loaded) && loaded.length > 0) {
-      saveCachedCyberCafes(loaded);
-      return loaded;
-    }
-  } catch (_e) {
-    // fallback to cache
-  }
-  return getCachedCyberCafes();
-}
-
-export async function saveCyberCafeDirectory(nodes: CyberCafeNodeItem[], actorEmail?: string): Promise<boolean> {
-  try {
-    saveCachedCyberCafes(nodes);
-
-    const res = await saveBusinessRule(
-      "cyber_cafe_directory",
-      nodes as unknown as Record<string, unknown>,
-      "Authorized local cyber cafes and CSC nodes with batch quotas set by Super Admin",
-      actorEmail
-    );
-
-    if (res.success) {
-      await logActivity({
-        action_type: "cyber_cafe.directory_updated",
-        target_table: "business_rules",
-        target_id: "cyber_cafe_directory",
-        metadata: { actor: actorEmail, totalNodes: nodes.length },
-      }).catch(() => null);
-    }
-
-    return res.success;
-  } catch (e) {
-    console.warn("Could not save cyber cafes to Supabase:", e);
-    return false;
-  }
-}
-
-export async function updateCyberCafeDailyLimit(
-  id: string,
-  newDailyLimit: number,
-  actorEmail?: string
-): Promise<{ success: boolean; limit: number }> {
-  const boundedLimit = Math.max(5, Math.min(newDailyLimit, 500));
-  const nodes = await getCyberCafeDirectory();
-  const target = nodes.find((n) => n.id === id);
-  if (!target) return { success: false, limit: boundedLimit };
-
-  target.dailyLimit = boundedLimit;
-  await saveCyberCafeDirectory(nodes, actorEmail);
-
-  await logActivity({
-    action_type: "cyber_cafe.limit_adjusted",
-    target_table: "business_rules",
-    target_id: id,
-    metadata: { actor: actorEmail, cscName: target.name, newDailyLimit: boundedLimit },
-  });
-
-  return { success: true, limit: boundedLimit };
 }

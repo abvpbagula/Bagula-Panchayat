@@ -14,7 +14,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { useMasterData } from "@/lib/masterData";
-import { ROLE_LABEL, type OfficeRole } from "@/lib/permissions";
+import { ROLE_LABEL, getDesignatedOfficeRole, type OfficeRole } from "@/lib/permissions";
 import { logActivity } from "@/lib/activityLog";
 import { handleAdminDbError, type SchemaErrorInfo } from "@/lib/adminDatabaseErrorHandler";
 import { SchemaErrorAlert } from "@/components/admin/SchemaErrorAlert";
@@ -74,8 +74,8 @@ export default function AdminEmployees() {
 
   const roleOf = (userId: string): OfficeRole | null => {
     const employee = rows.find((r) => r.user_id === userId);
-    const empEmail = employee?.email?.toLowerCase();
-    if (empEmail === "bagula2nogp111@gmail.com" || empEmail === "nitish374482@gmail.com") return "super_admin";
+    const designated = getDesignatedOfficeRole(employee?.email);
+    if (designated) return designated;
     const list = roles[userId] ?? [];
     if (list.includes("super_admin")) return "super_admin";
     if (list.includes("admin")) return "admin";

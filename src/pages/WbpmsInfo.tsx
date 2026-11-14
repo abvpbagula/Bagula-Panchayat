@@ -237,7 +237,7 @@ export default function WbpmsInfo() {
   const [purposeGuideOpen, setPurposeGuideOpen] = useState(false);
   const [purposeGuideServiceId, setPurposeGuideServiceId] = useState("residential");
 
-  // File validator state for cyber cafe / citizen pre-check
+  // File validator state for pre-check
   const [testFileType, setTestFileType] = useState<"photo" | "doc">("photo");
   const [fileCheckResult, setFileCheckResult] = useState<{
     fileName: string;
@@ -781,13 +781,13 @@ export default function WbpmsInfo() {
         </div>
       </div>
 
-      {/* Pre-Submission File Validator (Cyber Cafe & Citizen Helper) */}
+      {/* Pre-Submission File Validator (Citizen Helper) */}
       <div className="gov-card p-5 sm:p-6 mb-8 border border-primary/30 bg-primary/5">
         <div className="flex items-center justify-between flex-wrap gap-2 mb-3">
           <div className="flex items-center gap-2">
             <Sparkles size={18} className="text-primary" />
             <h3 className="text-base sm:text-lg font-bold text-foreground">
-              Cyber Cafe & Citizen Pre-Check: File Size & Format Validator
+              Pre-Submission Pre-Check: File Size & Format Validator
             </h3>
           </div>
           <span className="text-[11px] text-muted-foreground">
